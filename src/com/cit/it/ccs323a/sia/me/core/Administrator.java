@@ -17,6 +17,7 @@ public class Administrator {
 		return adminEvent;
 	}
 	
+	
 	public void setAdminEvent(String adminEvent) {
 		this.adminEvent = adminEvent;
 	}
