@@ -7,6 +7,8 @@ package com.cit.it.ccs323a.sia.me.ui;
 
 import javax.swing.JOptionPane;
 
+import com.cit.it.ccs323a.sia.me.core.User;
+
 /**
  *
  * @author L13Y16W10
@@ -17,6 +19,8 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Login
      */
     public Login(String userType) {
+    	System.out.println("................ Login.java");
+
         initComponents(userType);
     }
     
@@ -53,14 +57,26 @@ public class Login extends javax.swing.JFrame {
         jButton1.setText("Log in");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-            	
-            	
-                JOptionPane.showMessageDialog(null, userType + " " + jTextField1.getText() + " "  + jPasswordField1.getText() , "InfoBox: Admin", JOptionPane.INFORMATION_MESSAGE);
-                
+            	              
                 if(jTextField1.getText().equals("") || jPasswordField1.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Please input Username or password.", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
                 } else {
-                	jButton1ActionPerformed(evt);
+                	User user = new User();
+                	if(user.verifyLoginCredentials(jTextField1.getText(), jPasswordField1.getText())) {
+                		if(user.getUserType(jTextField1.getText()).toLowerCase().equals(userType.toLowerCase())) {
+                			user = user.getUserData(jTextField1.getText());
+                			jButton1ActionPerformed(evt, user);
+                		} else {
+                			JOptionPane.showMessageDialog(null, "You have no access to " + userType + " privileges.", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
+                		}
+                	} else {
+                		if(!user.searchUser(jTextField1.getText())) {
+                			JOptionPane.showMessageDialog(null, "Username does not exist!", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
+                		} else if (user.searchUser(jTextField1.getText()) && 
+                				(user.verifyLoginCredentials(jTextField1.getText(), jPasswordField1.getText()) == false)) {
+                			JOptionPane.showMessageDialog(null, "Wrong password!", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
+                		}
+                	}
                 }
    
             }
@@ -154,8 +170,8 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Main m = new Main();
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt, User user) {//GEN-FIRST:event_jButton1ActionPerformed
+        Main m = new Main(user);
         m.show(true);
         this.show(false);        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed

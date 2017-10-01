@@ -47,4 +47,10 @@ public class Event {
 		this.eventLocation = eventLocation;
 	}
 	
+	//create
+	//search
+	//update
+	//delete
+	
+	
 }

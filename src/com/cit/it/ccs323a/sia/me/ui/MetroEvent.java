@@ -5,6 +5,10 @@ package com.cit.it.ccs323a.sia.me.ui;
  * and open the template in the editor.
  */
 
+import javax.swing.JOptionPane;
+
+import com.cit.it.ccs323a.sia.me.core.User;
+
 /**
  *
  * @author L13y16w10
@@ -15,6 +19,7 @@ public class MetroEvent extends javax.swing.JFrame {
      * Creates new form MetroEvent
      */
     public MetroEvent(String userType) {
+    	System.out.println("................ MetroEvent.java ; userType : " + userType);
         initComponents(userType);
     }
 
@@ -28,46 +33,67 @@ public class MetroEvent extends javax.swing.JFrame {
     private void initComponents(String userType) {
 
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        txtUsername = new javax.swing.JTextField();
+        pwdPassword = new javax.swing.JPasswordField();
+        btnLogin = new javax.swing.JButton();
+        lblUsername = new javax.swing.JLabel();
+        lblPassword = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        lblLogin = new javax.swing.JLabel();
+        btnRegister = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(52, 73, 94));
         jPanel1.setForeground(new java.awt.Color(82, 179, 217));
 
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+        pwdPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
+                pwdPasswordActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Log in");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnLogin.setText("Log in");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                if(txtUsername.getText().equals("") || pwdPassword.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Please input Username or password.", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
+                } else {
+                	User user = new User();
+                	if(user.verifyLoginCredentials(txtUsername.getText(), pwdPassword.getText())) {
+                		System.out.println("User Type from database: " + user.getUserType(txtUsername.getText()));
+                		System.out.println("userType from Start.java " + userType);
+                		if(user.getUserType(txtUsername.getText()).toLowerCase().equals(userType.toLowerCase())) {
+                			user = user.getUserData(txtUsername.getText());
+                			btnLoginActionPerformed(evt, user);
+                		} else {
+                			JOptionPane.showMessageDialog(null, "You have no access to " + userType + " privileges.", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
+                		}
+                	} else {
+                		if(!user.searchUser(txtUsername.getText())) {
+                			JOptionPane.showMessageDialog(null, "Username does not exist!", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
+                		} else if (user.searchUser(txtUsername.getText()) && 
+                				(user.verifyLoginCredentials(txtUsername.getText(), pwdPassword.getText()) == false)) {
+                			JOptionPane.showMessageDialog(null, "Wrong password!", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
+                		}
+                	}
+                }
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Segoe Print", 1, 12)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(82, 179, 217));
-        jLabel4.setText("Username:");
+        lblUsername.setFont(new java.awt.Font("Segoe Print", 1, 12)); // NOI18N
+        lblUsername.setForeground(new java.awt.Color(82, 179, 217));
+        lblUsername.setText("Username:");
 
-        jLabel5.setFont(new java.awt.Font("Segoe Print", 1, 12)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(82, 179, 217));
-        jLabel5.setText("Password");
+        lblPassword.setFont(new java.awt.Font("Segoe Print", 1, 12)); // NOI18N
+        lblPassword.setForeground(new java.awt.Color(82, 179, 217));
+        lblPassword.setText("Password");
 
         jPanel2.setBackground(new java.awt.Color(51, 110, 123));
 
-        jLabel1.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(82, 179, 217));
-        jLabel1.setText("Log-in:");
+        lblLogin.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
+        lblLogin.setForeground(new java.awt.Color(82, 179, 217));
+        lblLogin.setText("Log-in:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -75,21 +101,21 @@ public class MetroEvent extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(lblLogin)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(lblLogin)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton3.setText("Register");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnRegister.setText("Register");
+        btnRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnRegisterActionPerformed(evt, userType);
             }
         });
 
@@ -103,17 +129,17 @@ public class MetroEvent extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 73, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
+                            .addComponent(lblUsername)
+                            .addComponent(lblPassword))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(pwdPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(87, 87, 87)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(38, 38, 38)
-                        .addComponent(jButton3)
+                        .addComponent(btnRegister)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(68, 68, 68))
         );
@@ -123,16 +149,16 @@ public class MetroEvent extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
+                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblPassword)
+                    .addComponent(pwdPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton3))
+                    .addComponent(btnLogin)
+                    .addComponent(btnRegister))
                 .addGap(20, 20, 20))
         );
 
@@ -153,21 +179,31 @@ public class MetroEvent extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+    private void pwdPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pwdPasswordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
+    }//GEN-LAST:event_pwdPasswordActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Main m = new Main();
-        m.show(true);
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt, User user) {//GEN-FIRST:event_btnLoginActionPerformed
+    	System.out.println("btnLoginActionPerformed userType: " + user.getUserType());
+    	if(user.getUserType().equals("user")) {
+    		MainUser mu = new MainUser(user);
+            mu.show(true);
+    		System.out.println("Selected usertype = user " + user.getUserType());
+    	} else {
+            Main m = new Main(user);
+            m.show(true);
+    		System.out.println("Selected usertype = admin/org " + user.getUserType());
+	   	}
         this.show(false);        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnLoginActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        Register r = new Register();
+    private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt, String userType) {//GEN-FIRST:event_btnRegisterActionPerformed
+		JOptionPane.showMessageDialog(null, userType, "InfoBox: MetroEvent.java", JOptionPane.ERROR_MESSAGE);
+
+        Register r = new Register(userType);
         r.show(true);
         this.show(false);        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnRegisterActionPerformed
 
     /**
      * @param args the command line arguments
@@ -178,7 +214,11 @@ public class MetroEvent extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+    	
         try {
+        	MetroEvent me = new MetroEvent("user");
+        	me.show();
+
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
@@ -205,14 +245,15 @@ public class MetroEvent extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JButton btnRegister;
+    private javax.swing.JLabel lblLogin;
+    private javax.swing.JLabel lblUsername;
+    private javax.swing.JLabel lblPassword;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPasswordField pwdPassword;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
+    
 }

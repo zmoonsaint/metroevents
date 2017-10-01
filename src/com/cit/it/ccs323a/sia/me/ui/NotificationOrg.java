@@ -5,17 +5,58 @@ package com.cit.it.ccs323a.sia.me.ui;
  * and open the template in the editor.
  */
 
+import java.awt.Dimension;
+import java.util.ArrayList;
+
+import javax.swing.JTable;
+
+import com.cit.it.ccs323a.sia.me.core.Request;
+import com.cit.it.ccs323a.sia.me.core.User;
+
 /**
  *
  * @author Zerah
  */
 public class NotificationOrg extends javax.swing.JFrame {
-
+	User user;
+	Request request = new Request();
+	ArrayList<Request> userRequests  = null;
+	String[] columnNames = {"Request ID",
+			"Request Date",
+			"Request Name",
+			"Request Status",
+			"Approved Date"};
+	
+	Object[][] data = {
+			{"1", "2017-23-207",
+				"To Organizee", "Pending", ""},
+			{"1", "2017-23-207","Create Event", "Approved", "2017-23-2038"},
+	};
     /**
      * Creates new form NotificationOrg
      */
-    public NotificationOrg() {
-        initComponents();
+    public NotificationOrg(User user) {
+    	this.user = user;
+    	System.out.println(".........................Notification " + user.getUserType());
+    	userRequests = request.getAllUserRequests(user);
+    	
+    	for(int i = 0; i < userRequests.size(); i++) {
+    		data[i][0] = userRequests.get(i).getRequestID();
+    		data[i][1] = userRequests.get(i).getRequestDate();
+    		data[i][2] = userRequests.get(i).getRequestTypeID();
+    		data[i][3] = userRequests.get(i).getRequestStatusID();
+    		data[i][4] = userRequests.get(i).getRequestStatusDate();
+
+    		
+
+    		System.out.println("................ID :" + userRequests.get(i).getRequestID());
+    		System.out.println("................Request Type : " + userRequests.get(i).getRequestTypeID());
+    		System.out.println("................Request Type : " + userRequests.get(i).getRequestStatusID());
+
+    	}
+    		
+    	
+        initComponents(user);
     }
 
     /**
@@ -25,13 +66,21 @@ public class NotificationOrg extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents(User user) {
 
         jSpinner1 = new javax.swing.JSpinner();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+		final JTable table = new JTable(data,columnNames);
+		
+
+		
+		table.setPreferredScrollableViewportSize(new Dimension(500, 100));
+		
+		table.setFillsViewportHeight(true);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,6 +100,8 @@ public class NotificationOrg extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
+                .addComponent(table)
+
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -58,9 +109,27 @@ public class NotificationOrg extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
+                .addComponent(table)
                 .addContainerGap())
         );
 
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(table)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(table)
+                .addContainerGap())
+        );
+                
         jButton2.setText("Ok");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -73,6 +142,7 @@ public class NotificationOrg extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(256, 256, 256)
                 .addComponent(jButton2)
@@ -82,6 +152,7 @@ public class NotificationOrg extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 288, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addGap(58, 58, 58))
@@ -93,10 +164,12 @@ public class NotificationOrg extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                //.addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+           // .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -104,7 +177,7 @@ public class NotificationOrg extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        MainUser m= new MainUser();
+        MainUser m= new MainUser(user);
         m.show(true);
         this.show(false);// TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -137,11 +210,11 @@ public class NotificationOrg extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+/*        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new NotificationOrg().setVisible(true);
             }
-        });
+        });*/
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -149,6 +222,8 @@ public class NotificationOrg extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JLabel jTable;
     // End of variables declaration//GEN-END:variables
 }

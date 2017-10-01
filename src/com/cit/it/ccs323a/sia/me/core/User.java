@@ -1,8 +1,14 @@
 package com.cit.it.ccs323a.sia.me.core;
 
+import java.sql.SQLException;
+import java.util.Date;
+
+import com.cit.it.ccs323a.sia.me.db.DBUser;
+
 public class User {
 	
 	private int userID;
+	private String userFullName;
 	private int userAge;
 	private String userBirthdate;
 	private String userAddress;
@@ -10,9 +16,17 @@ public class User {
 	private String userEmail;
 	private String userPassword;
 	private String userRequest;
+	private String userType;
+	private DBUser dbUser = new DBUser();
 	
 	public int getUserID() {
 		return userID;
+	}
+	public String getUserFullName() {
+		return userFullName;
+	}
+	public void setUserFullName(String userFullName) {
+		this.userFullName = userFullName;
 	}
 	public void setUserID(int userID) {
 		this.userID = userID;
@@ -60,11 +74,39 @@ public class User {
 		this.userRequest = userRequest;
 	}
 	
-	public boolean registerNewUser(User user) {
-		boolean flag = false;
-		// below code to add user to db
-		
-		return flag;
+	public String getUserType() {
+		return userType;
+	}
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+	
+	public boolean registerNewUser(User user) throws SQLException {
+		return dbUser.createNewUser(user);
+	}
+	
+	public boolean searchUser(String username) {
+		return dbUser.searchUser(username);
+	}
+	
+	public boolean verifyLoginCredentials(String userName, String password) {
+		return dbUser.verifyLoginCredentials(userName, password);	
+	}
+	
+	public String getUserType(String userName) {
+		String userType = "";
+		if(dbUser.searchUser(userName)) {
+			userType = dbUser.getUserType(userName);
+		}
+		return userType;
+	}
+
+	public User getUserData(String userName) {
+		return dbUser.getUserData(userName);
+	}
+	
+	public boolean updateUserProfile(User user) {
+		return dbUser.updateUserProfile(user);
 	}
 
 }

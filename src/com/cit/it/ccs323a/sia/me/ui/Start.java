@@ -18,6 +18,8 @@ public class Start extends javax.swing.JFrame {
      * Creates new form Start
      */
     public Start() {
+    	System.out.println("................ Start.java");
+
         initComponents();
         this.setLocationRelativeTo(null);
     }
@@ -32,62 +34,60 @@ public class Start extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        lblLoginAs = new javax.swing.JLabel();
+        btnUser = new javax.swing.JButton();
+        btnOrganizer = new javax.swing.JButton();
+        btnAdministrator = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        lblMetroEvents = new javax.swing.JLabel();
+        lblWelcome = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(52, 73, 94));
 
-        jLabel3.setFont(new java.awt.Font("Segoe Print", 1, 11)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(82, 179, 217));
-        jLabel3.setText("Log-in as:");
+        lblLoginAs.setFont(new java.awt.Font("Segoe Print", 1, 11)); // NOI18N
+        lblLoginAs.setForeground(new java.awt.Color(82, 179, 217));
+        lblLoginAs.setText("Log-in as:");
 
-        jButton1.setFont(new java.awt.Font("Segoe Print", 0, 11)); // NOI18N
-        jButton1.setText("User");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnUser.setFont(new java.awt.Font("Segoe Print", 0, 11)); // NOI18N
+        btnUser.setText("User");
+        btnUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt, jButton1.getText());
+                btnUserActionPerformed(evt, btnUser.getText());
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Segoe Print", 0, 11)); // NOI18N
-        jButton2.setText("Organizer");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnOrganizer.setFont(new java.awt.Font("Segoe Print", 0, 11)); // NOI18N
+        btnOrganizer.setText("Organizer");
+        btnOrganizer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                //jButton2ActionPerformed(evt);
-                JOptionPane.showMessageDialog(null, evt.getID(), "InfoBox: Admin", JOptionPane.INFORMATION_MESSAGE);
-
+                btnOrganizerActionPerformed(evt, btnOrganizer.getText());
             }
         });
 
-        jButton3.setFont(new java.awt.Font("Segoe Print", 0, 11)); // NOI18N
-        jButton3.setText("Administrator");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnAdministrator.setFont(new java.awt.Font("Segoe Print", 0, 11)); // NOI18N
+        btnAdministrator.setText("Administrator");
+        btnAdministrator.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt,  jButton3.getText());
+                btnAdministratorActionPerformed(evt,  btnAdministrator.getText());
                 
-                //JOptionPane.showMessageDialog(null, jButton3.getText(), "InfoBox: Admin", JOptionPane.INFORMATION_MESSAGE);
+                //JOptionPane.showMessageDialog(null, btnAdministrator.getText(), "InfoBox: Admin", JOptionPane.INFORMATION_MESSAGE);
 
             }
         });
 
         jPanel2.setBackground(new java.awt.Color(51, 110, 123));
 
-        jLabel2.setBackground(new java.awt.Color(65, 131, 215));
-        jLabel2.setFont(new java.awt.Font("Segoe Print", 1, 36)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(82, 179, 217));
-        jLabel2.setText("Metro Events");
+        lblMetroEvents.setBackground(new java.awt.Color(65, 131, 215));
+        lblMetroEvents.setFont(new java.awt.Font("Segoe Print", 1, 36)); // NOI18N
+        lblMetroEvents.setForeground(new java.awt.Color(82, 179, 217));
+        lblMetroEvents.setText("Metro Events");
 
-        jLabel1.setBackground(new java.awt.Color(228, 241, 254));
-        jLabel1.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(82, 179, 217));
-        jLabel1.setText("Welcome to");
+        lblWelcome.setBackground(new java.awt.Color(228, 241, 254));
+        lblWelcome.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
+        lblWelcome.setForeground(new java.awt.Color(82, 179, 217));
+        lblWelcome.setText("Welcome to");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -95,19 +95,19 @@ public class Start extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(lblWelcome)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
+                .addComponent(lblMetroEvents)
                 .addContainerGap(257, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addComponent(jLabel2)
+                .addComponent(lblMetroEvents)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(lblWelcome)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -120,16 +120,16 @@ public class Start extends javax.swing.JFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(146, 146, 146)
-                        .addComponent(jButton3))
+                        .addComponent(btnAdministrator))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(63, 63, 63)
-                        .addComponent(jLabel3)
+                        .addComponent(lblLoginAs)
                         .addGap(45, 45, 45)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton2)
+                            .addComponent(btnOrganizer)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(12, 12, 12)
-                                .addComponent(jButton1)))))
+                                .addComponent(btnUser)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -137,13 +137,13 @@ public class Start extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
+                .addComponent(lblLoginAs)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(btnUser)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
+                .addComponent(btnOrganizer)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton3)
+                .addComponent(btnAdministrator)
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -167,23 +167,25 @@ public class Start extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt, String userType) {//GEN-FIRST:event_jButton3ActionPerformed
-        Login l= new Login(userType);
-        l.show(true);
+    private void btnAdministratorActionPerformed(java.awt.event.ActionEvent evt, String userType) {//GEN-FIRST:event_btnAdministratorActionPerformed
+        //Login l= new Login(userType);
+        MetroEvent me = new MetroEvent(userType);
+        me.show(true);
         this.show(false);             // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnAdministratorActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt, String userType) {//GEN-FIRST:event_jButton2ActionPerformed
-        Login l= new Login(userType);
-        l.show(true);
+    private void btnOrganizerActionPerformed(java.awt.event.ActionEvent evt, String userType) {//GEN-FIRST:event_btnOrganizerActionPerformed
+//        Login l= new Login(userType);
+        MetroEvent me = new MetroEvent(userType);
+        me.show(true);
         this.show(false);        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnOrganizerActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt, String userType) {//GEN-FIRST:event_jButton1ActionPerformed
-        MetroEvent m = new MetroEvent(userType);
-        m.show(true);
+    private void btnUserActionPerformed(java.awt.event.ActionEvent evt, String userType) {//GEN-FIRST:event_btnUserActionPerformed
+        MetroEvent me = new MetroEvent(userType);
+        me.show(true);
         this.show(false);        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnUserActionPerformed
 
     /**
      * @param args the command line arguments
@@ -221,12 +223,12 @@ public class Start extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JButton btnUser;
+    private javax.swing.JButton btnOrganizer;
+    private javax.swing.JButton btnAdministrator;
+    private javax.swing.JLabel lblWelcome;
+    private javax.swing.JLabel lblMetroEvents;
+    private javax.swing.JLabel lblLoginAs;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
