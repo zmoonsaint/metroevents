@@ -33,7 +33,8 @@ public class DBEvent {
 				+ " eventName,"
 				+ " eventDate,"
 				+ " eventOrganizer,"
-				+ " eventLocation) VALUES ("
+				+ " eventLocation,"
+				+ " eventDescription) VALUES ("
 				+ "?, ?, ?, ?, ?)";
 		
 		try {
@@ -43,6 +44,8 @@ public class DBEvent {
 			stmt.setDate(3, event.getEventDate());
 			stmt.setInt(4, event.getEventOrganizer());
 			stmt.setString(5, event.getEventLocation());
+			stmt.setString(6, event.getEventDescription());
+
 			System.out.println(stmt.toString());
 			stmt.executeUpdate();
 			return true;
@@ -95,6 +98,7 @@ public class DBEvent {
 				uEvent.setEventName(resultset.getString("eventName"));
 				uEvent.setEventDate(resultset.getDate("eventDate"));
 				uEvent.setEventLocation(resultset.getString("eventLocation"));
+				uEvent.setEventDescription(resultset.getString("eventDescription"));
 				uEvent.setEventDateAdd(resultset.getTimestamp("eventDateAdded"));
 				
 				userEvents.add(uEvent);
@@ -111,7 +115,7 @@ public class DBEvent {
 		connection = DBAccess.getConnection();
 		ArrayList<Events> userEvents  = null;
 
-		sqlStatement = "Select eventCode, eventName, eventDate, eventLocation, eventDateAdded "
+		sqlStatement = "Select eventCode, eventName, eventDate, eventLocation, eventDescription, eventOrganizer, eventDateAdded "
 				+ "from me_request "
 				+ "JOIN me_event ON "
 				+ "me_request.requestID = me_event.requestID "
@@ -130,6 +134,8 @@ public class DBEvent {
 				uEvent.setEventName(resultset.getString("eventName"));
 				uEvent.setEventDate(resultset.getDate("eventDate"));
 				uEvent.setEventLocation(resultset.getString("eventLocation"));
+				uEvent.setEventDescription(resultset.getString("eventDescription"));
+				uEvent.setEventOrganizer(resultset.getInt("eventOrganizer"));
 				uEvent.setEventDateAdd(resultset.getTimestamp("eventDateAdded"));
 				userEvents.add(uEvent);
 			}

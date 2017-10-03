@@ -17,6 +17,7 @@ public class Events {
 	private Date eventDate;
 	private int eventOrganizer; //userID
 	private String eventLocation;
+	private String eventDescription;
 	private Timestamp eventDateAdd;
 	public DBEvent dbEvent = new DBEvent();
 
@@ -65,6 +66,14 @@ public class Events {
 
 	public void setEventDateAdd(Timestamp eventDateAdd) {
 		this.eventDateAdd = eventDateAdd;
+	}
+	
+	public String getEventDescription() {
+		return eventDescription;
+	}
+
+	public void setEventDescription(String eventDescription) {
+		this.eventDescription = eventDescription;
 	}
 	
 	//create
@@ -150,6 +159,7 @@ public class Events {
 			no.setVisible(true);
 
 	}
-	
+
+
 	
 }

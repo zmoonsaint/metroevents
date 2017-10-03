@@ -10,6 +10,8 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -27,6 +29,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
+import com.cit.it.ccs323a.sia.me.core.Events;
+import com.cit.it.ccs323a.sia.me.core.User;
+
 public class ViewEvents  extends JPanel
 implements ActionListener {
 	
@@ -38,18 +43,26 @@ implements ActionListener {
 	    protected static final String txtEventOrganizerString = "Event Organizer";
 	    protected static final String buttonString = "JButton";  
 	    private String eventCode;
+	    private static User user;
+        JFrame frame = new JFrame("Events");
+
+	    Events events = new Events();
+	    
 	    
 		String[] columnNames = {"Event Code", 
 				"Event Name",
 				"Event Date",
 				"Event Location",
+				"Event Description",
+				"Event Organizer",
 				"Event Date Added"} ;
-		Object [][] rowData = {{"event1", "eventN ame", "eve     ntDate", "eve                 ntLocation", "eventDateAdded"},
-				{"event2", "eventName", "eventDate", "eventLocation", "eventDateAdded"}};
+		/*Object [][] rowData = {{"event1", "eventN ame", "eve     ntDate", "eve                 ntLocation", "eventDateAdded"},
+				{"event2", "eventName", "eventDate", "eventLocation", "eventDateAdded"}};*/
 	 
 	    protected JLabel actionLabel;
 	 
-	    public ViewEvents() {
+	    public ViewEvents(User user) {
+	    	this.user = user;
 	        setLayout(new BorderLayout());
 	 
 	        //Create a regular text field.
@@ -90,7 +103,8 @@ implements ActionListener {
 	        JLabel txtEventOrganizerLabel = new JLabel(txtEventOrganizerString + ": ");
 	        txtEventDateLabel.setLabelFor(txtEventDate);
 	        JButton btnJoinEvent = new JButton("Join Event");
-	        
+	        JButton btnBack = new JButton("Back");
+
 	 
 
 	 
@@ -109,6 +123,7 @@ implements ActionListener {
 	        c.anchor = GridBagConstraints.WEST;
 	        c.weightx = 1.0;
 	        textControlsPane.add(btnJoinEvent);
+	        textControlsPane.add(btnBack);
 	        textControlsPane.setBorder(
 	                BorderFactory.createCompoundBorder(
 	                                BorderFactory.createTitledBorder("Event Data"),
@@ -133,9 +148,27 @@ implements ActionListener {
 	                areaScrollPane.getBorder()));
 	 
 	        //Create an editor pane.
+
+	        
+	        
+	    	ArrayList<Events> eventArr = events.getAllEventsByStatus(2);
 	        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
-	        tableModel.addRow(rowData[0]);
-	        tableModel.addRow(rowData[1]);
+	    	
+	    	for(int i = 0; i < eventArr.size(); i++) {
+	    		String eventCode = eventArr.get(i).getEventCode();
+	    		String eventName = eventArr.get(i).getEventName();
+	    		Date eventDate = eventArr.get(i).getEventDate();
+	    		String eventLocation = eventArr.get(i).getEventLocation();
+	    		String eventDescription = eventArr.get(i).getEventDescription();
+	    		int eventOrganizer = eventArr.get(i).getEventOrganizer();
+	    		Date eventDateAdded = eventArr.get(i).getEventDateAdd();
+   		   		
+	    		Object[] rowData = {eventCode, eventName, eventDate, eventLocation, eventDescription, eventOrganizer, eventDateAdded};
+	    		tableModel.addRow(rowData);
+
+	    	}	        
+	        
+	        
 	        final JTable table = new JTable(tableModel);
 			table.setPreferredSize(new Dimension (100,100));
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -150,16 +183,18 @@ implements ActionListener {
 
 			    	eventCode = (String) table.getValueAt(row, 0);
 			    	String eventName = (String) table.getValueAt(row, 1);
-			    	String eventDate = (String) table.getValueAt(row, 2);
+			    	Date eventDate =  (Date) table.getValueAt(row, 2);
 			    	String eventLocation = (String) table.getValueAt(row, 3);
-			    	String eventOrganizer = (String) table.getValueAt(row, 4);
+			    	String eventDescription = (String) table.getValueAt(row, 4);
+			    	int eventOrganizer = (int) table.getValueAt(row, 5);
 			    	System.out.println(eventCode);
 			    	
 			    	txtEventCode.setText(eventCode);
 			    	txtEventName.setText(eventName);
-			    	txtEventDate.setText(eventDate);
+			    	//txtEventDate = new JFormattedTextField(java.util.Calendar.getInstance().getTime());
 			    	txtEventLocation.setText(eventLocation);
-			    	txtEventOrganizer.setText(eventOrganizer);
+			    	textArea.setText(eventDescription);
+			    	txtEventOrganizer.setText(String.valueOf(eventOrganizer));
 			    	
 			  }});
 			
@@ -174,6 +209,20 @@ implements ActionListener {
 						JOptionPane.showMessageDialog(null, "Request to joint event is sent to Organizer for approval.\nCheck request status through notification.", "InfoBox: CONFIRMATION", JOptionPane.INFORMATION_MESSAGE);
 						// code to join event here.
 			    	} 				
+				}
+	        });
+	        
+	        btnBack.addActionListener(new java.awt.event.ActionListener() {
+	        	public void actionPerformed(java.awt.event.ActionEvent evt) {
+	        		btnBackEventActionPerformed(evt);
+	        	}
+
+				private void btnBackEventActionPerformed(ActionEvent evt) {
+					frame.setVisible(false);
+					frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+					Main m= new Main(user);
+				     m.show(true);
+				    
 				}
 	        });
 			
@@ -256,38 +305,17 @@ implements ActionListener {
 	        }
 	    }
 	    
-
-	
-	 
-	    /**
-	     * Create the GUI and show it.  For thread safety,
-	     * this method should be invoked from the
-	     * event dispatch thread.
-	     */
-	    private static void createAndShowGUI() {
+	    public void createAndShowGUI(boolean open) {
 	        //Create and set up the window.
-	        JFrame frame = new JFrame("Events");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	 
 	        //Add content to the window.
-	        frame.add(new ViewEvents());
+	        frame.add(new ViewEvents(user));
 	 
 	        //Display the window.
 	        frame.pack();
-	        frame.setVisible(true);
+	        frame.setVisible(open);
 	    }
 	 
-	    public static void main(String[] args) {
-	        //Schedule a job for the event dispatching thread:
-	        //creating and showing this application's GUI.
-	        SwingUtilities.invokeLater(new Runnable() {
-	            public void run() {
-	                 //Turn off metal's use of bold fonts
-	        UIManager.put("swing.boldMetal", Boolean.FALSE);
-	        createAndShowGUI();
-	            }
-	        });
-	    }
-
-
+	
 }

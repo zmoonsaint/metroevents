@@ -374,7 +374,7 @@ public class Register extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void btnNotificationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNotificationActionPerformed
-        NotificationOrg n = new NotificationOrg();
+        NotificationOrg n = new NotificationOrg(user);
         n.show(true);
         this.show(false);// TODO add your handling code here:
     }//GEN-LAST:event_btnNotificationActionPerformed
