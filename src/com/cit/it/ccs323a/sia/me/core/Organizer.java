@@ -6,7 +6,7 @@ public class Organizer {
 	private String orgEmail;
 	private String orgEvent;
 	private String orgPassword;
-	private String orgRequest;
+	private String orgRequest; 
 	
 	public String getOrgUsername() {
 		return orgUsername;
