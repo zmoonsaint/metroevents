@@ -355,6 +355,7 @@ public class Register extends javax.swing.JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
     	if(user.getUserType().equals("3")) {
     		MainUser mu = new MainUser (user);
     		System.out.println("View MainUser.java");

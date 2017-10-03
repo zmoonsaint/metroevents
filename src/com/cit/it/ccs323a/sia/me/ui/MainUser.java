@@ -408,6 +408,7 @@ public class MainUser extends javax.swing.JFrame {
     		System.out.println("Confirm request to organize event..............");
 			JOptionPane.showMessageDialog(null, "Request to orgazine event is sent to Admin for approval.\nCheck request status through notification.", "InfoBox: CONFIRMATION", JOptionPane.INFORMATION_MESSAGE);
 			Request request = new Request();
+			System.out.println("...........................................userIDRequest to Organize" + userID);
 			request.setUserID(userID);
 			request.setRequestTypeID(RequestType.TO_ORGANIZER);
 			request.setRequestStatusID(RequestStatus.PENDING);

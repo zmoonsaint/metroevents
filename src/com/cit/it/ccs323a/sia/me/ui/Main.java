@@ -167,6 +167,7 @@ public class Main extends javax.swing.JFrame {
         lblConfirmPassword.setText("Confirm Password:");        
 
         txtEventSearch.setText("txtEventSearch");
+        
         txtUsername.setText(user.getUserName());
         txtName.setText(user.getUserFullName());
         txtAge.setText(String.valueOf(user.getUserAge()));
@@ -174,6 +175,7 @@ public class Main extends javax.swing.JFrame {
         txtAddress.setText(user.getUserAddress());
         txtEmail.setText(user.getUserEmail());       
         pwdPassword.setText(user.getUserPassword());
+        pwdConfirmPassword.setText(user.getUserPassword());
         
         
         txtUsername.addActionListener(new java.awt.event.ActionListener() {
