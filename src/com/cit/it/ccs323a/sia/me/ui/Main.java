@@ -19,12 +19,14 @@ import com.cit.it.ccs323a.sia.me.core.User;
  * @author L13Y16W10
  */
 public class Main extends javax.swing.JFrame {
+	User user;
     String previousUsername;
 
     /**
      * Creates new form Main
      */
     public Main(User user) {
+    	this.user = user;
     	System.out.println("................ Main.java");
     	previousUsername = user.getUserName();
         initComponents(user);
@@ -421,7 +423,7 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNotificationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNotificationActionPerformed
-        NotificationOrg n = new NotificationOrg();
+        NotificationOrg n = new NotificationOrg(user);
         n.show(true);
         this.show(false);// TODO add your handling code here:
     }//GEN-LAST:event_btnNotificationActionPerformed
@@ -443,7 +445,8 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        Event v= new Event();
+    	System.out.println("Event button is clicked");
+        Event v= new Event(user);
         v.show(true);
         this.show(false);        // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed

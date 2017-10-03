@@ -5,17 +5,30 @@ package com.cit.it.ccs323a.sia.me.ui;
  * and open the template in the editor.
  */
 
+import java.util.ArrayList;
+
+import com.cit.it.ccs323a.sia.me.core.Request;
+import com.cit.it.ccs323a.sia.me.core.User;
+
 /**
  *
  * @author Zerah
  */
 public class EventOrg extends javax.swing.JFrame {
-
+	User user;
+	Request request = new Request();
+	ArrayList<Request> userRequests  = null;
+	String[] columnNames = {"Event Code",
+			"Event Name",
+			"Event Date",
+			"Event Location"};
     /**
      * Creates new form EventOrg
      */
-    public EventOrg() {
-        initComponents();
+    public EventOrg(User user) {
+    	this.user = user;
+    	System.out.println(".........................EventsOrg.java " + user.getUserType());
+        initComponents(user);
     }
 
     /**
@@ -25,7 +38,7 @@ public class EventOrg extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents(User user) {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -103,7 +116,7 @@ public class EventOrg extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Main m= new Main();
+        Main m= new Main(user);
         m.show(true);
         this.show(false);// TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -136,11 +149,11 @@ public class EventOrg extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EventOrg().setVisible(true);
-            }
-        });
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new EventOrg().setVisible(true);
+//            }
+//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

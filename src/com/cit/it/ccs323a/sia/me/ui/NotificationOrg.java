@@ -7,8 +7,11 @@ package com.cit.it.ccs323a.sia.me.ui;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Date;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import com.cit.it.ccs323a.sia.me.core.Request;
 import com.cit.it.ccs323a.sia.me.core.User;
@@ -26,36 +29,13 @@ public class NotificationOrg extends javax.swing.JFrame {
 			"Request Name",
 			"Request Status",
 			"Approved Date"};
-	
-	Object[][] data = {
-			{"1", "2017-23-207",
-				"To Organizee", "Pending", ""},
-			{"1", "2017-23-207","Create Event", "Approved", "2017-23-2038"},
-	};
+
     /**
      * Creates new form NotificationOrg
      */
     public NotificationOrg(User user) {
     	this.user = user;
-    	System.out.println(".........................Notification " + user.getUserType());
-    	userRequests = request.getAllUserRequests(user);
-    	
-    	for(int i = 0; i < userRequests.size(); i++) {
-    		data[i][0] = userRequests.get(i).getRequestID();
-    		data[i][1] = userRequests.get(i).getRequestDate();
-    		data[i][2] = userRequests.get(i).getRequestTypeID();
-    		data[i][3] = userRequests.get(i).getRequestStatusID();
-    		data[i][4] = userRequests.get(i).getRequestStatusDate();
-
-    		
-
-    		System.out.println("................ID :" + userRequests.get(i).getRequestID());
-    		System.out.println("................Request Type : " + userRequests.get(i).getRequestTypeID());
-    		System.out.println("................Request Type : " + userRequests.get(i).getRequestStatusID());
-
-    	}
-    		
-    	
+    	System.out.println(".........................NotificationOrg " + user.getUserType());
         initComponents(user);
     }
 
@@ -67,6 +47,7 @@ public class NotificationOrg extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents(User user) {
+    	
 
         jSpinner1 = new javax.swing.JSpinner();
         jPanel1 = new javax.swing.JPanel();
@@ -74,14 +55,38 @@ public class NotificationOrg extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
-		final JTable table = new JTable(data,columnNames);
-		
+        
+    	ArrayList<Request> userRequests = request.getAllUserRequests(user);
+    	DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+    	
+    	for(int i = 0; i < userRequests.size(); i++) {
+    		int userRequestID = userRequests.get(i).getRequestID();
 
-		
+    		Date userRequestDate = userRequests.get(i).getRequestDate();
+    		String userRequestTypeID = null;
+    		switch(userRequests.get(i).getRequestTypeID()) {
+	    		case 1: userRequestTypeID = "Requested to organize a event."; break;
+	    		case 2: userRequestTypeID = "Requested to approval of created event."; break;
+	    		case 3: userRequestTypeID = "Requested to join an event."; break;
+    		}
+    		String userRquestStatusID = null;
+    		switch(userRequests.get(i).getRequestStatusID()) {
+	    		case 1: userRquestStatusID = "PENDING"; break;
+	    		case 2: userRquestStatusID = "APPROVED"; break;
+	    		case 3: userRquestStatusID = "DECLINED"; break;
+    		}
+    		Date userRequestStatusDate = userRequests.get(i).getRequestStatusDate();
+    		
+    		Object[] rowData = {userRequestID, userRequestDate, userRequestTypeID, userRquestStatusID, userRequestStatusDate };
+    		tableModel.addRow(rowData);
+
+    	}
+    	
+   	
+		final JTable table = new JTable(tableModel);
 		table.setPreferredScrollableViewportSize(new Dimension(500, 100));
-		
 		table.setFillsViewportHeight(true);
-
+		JScrollPane jScrollPane = new JScrollPane(table);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(52, 73, 94));
@@ -100,7 +105,7 @@ public class NotificationOrg extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addComponent(table)
+                .addComponent(jScrollPane)
 
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -109,7 +114,7 @@ public class NotificationOrg extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addComponent(table)
+                .addComponent(jScrollPane)
                 .addContainerGap())
         );
 
@@ -119,14 +124,14 @@ public class NotificationOrg extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(table)
+                .addComponent(jScrollPane)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(table)
+                .addComponent(jScrollPane)
                 .addContainerGap())
         );
                 
@@ -225,5 +230,6 @@ public class NotificationOrg extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JLabel jTable;
+    private javax.swing.JScrollPane jScrollPane;
     // End of variables declaration//GEN-END:variables
 }

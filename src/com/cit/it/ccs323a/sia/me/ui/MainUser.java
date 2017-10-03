@@ -444,7 +444,7 @@ public class MainUser extends javax.swing.JFrame {
     }//GEN-LAST:event_txtSearchEventActionPerformed
 
     private void btnEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventActionPerformed
-        Event v= new Event();
+        Event v= new Event(user);
         v.show(true);
         this.show(false);        // TODO add your handling code here:
     }//GEN-LAST:event_btnEventActionPerformed

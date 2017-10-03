@@ -5,16 +5,53 @@ package com.cit.it.ccs323a.sia.me.ui;
  * and open the template in the editor.
  */
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+
+import com.cit.it.ccs323a.sia.me.constants.RequestStatus;
+import com.cit.it.ccs323a.sia.me.constants.RequestType;
+import com.cit.it.ccs323a.sia.me.core.Events;
+import com.cit.it.ccs323a.sia.me.core.Request;
+import com.cit.it.ccs323a.sia.me.core.User;
+
 /**
  *
  * @author l13y16w10
  */
 public class Event extends javax.swing.JFrame {
-
+	String eventCode;
+	User user;
+	Events events = new Events();
+	ArrayList<Event> eventArr  = null;
+	String[] columnNames = {"Event Code",
+			"Event Name",
+			"Event Date",
+			"Event Location",
+			"Event Date Added"} ;
     /**
      * Creates new form Event
      */
-    public Event() {
+    public Event(User user) {
+    	this.user = user;
+    	System.out.println(".........................Event.java " + user.getUserType());
         initComponents();
     }
 
@@ -36,7 +73,73 @@ public class Event extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        JButton btnJoinEvent = new javax.swing.JButton();
+        JPanel jpanel = new javax.swing.JPanel();
+        JTextPane textPane = new javax.swing.JTextPane(); 
 
+
+
+    	
+    	
+
+        
+        
+    	ArrayList<Events> eventArr = events.getAllEventsByStatus(2);
+    	DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+    	
+    	for(int i = 0; i < eventArr.size(); i++) {
+    		String eventCode = eventArr.get(i).getEventCode();
+    		String eventName = eventArr.get(i).getEventName();
+    		Date eventDate = eventArr.get(i).getEventDate();
+    		String eventLocation = eventArr.get(i).getEventLocation();
+    		Date eventDateAdded = eventArr.get(i).getEventDateAdd();
+    	
+   		
+    		Object[] rowData = {eventCode, eventName, eventDate, eventLocation, eventDateAdded};
+    		tableModel.addRow(rowData);
+
+    	}
+    	final JTable table = new JTable(tableModel);
+		table.setPreferredScrollableViewportSize(new Dimension(500, 100));
+		table.setFillsViewportHeight(true);
+		JScrollPane jScrollPane = new JScrollPane(table);
+		
+		
+		table.addMouseListener(new java.awt.event.MouseAdapter() {
+		    @Override
+		    public void mouseClicked(java.awt.event.MouseEvent evt) {
+
+		    
+		        int row = table.rowAtPoint(evt.getPoint());
+		        int col = table.columnAtPoint(evt.getPoint());
+
+		    	eventCode = (String) table.getValueAt(row, 0);
+		    	System.out.println(eventCode);
+		        jpanel.setLayout(new GridLayout(3, 2, 10, 2));
+		    	textPane.setPreferredSize(new Dimension(200,250));
+		    	jpanel.setVisible(false);
+		    	btnJoinEvent.setText("Join Event");
+		    	jpanel.add(btnJoinEvent);
+		    	jpanel.add(textPane);
+		    	StyledDocument doc = textPane.getStyledDocument();
+		    	jpanel.setVisible(true);
+		    	SimpleAttributeSet keyWord = new SimpleAttributeSet();
+		    	StyleConstants.setForeground(keyWord, Color.RED);
+		    	StyleConstants.setBackground(keyWord, Color.YELLOW);
+		    	StyleConstants.setBold(keyWord, true);
+
+		    	//  Add some text
+
+		    	try
+		    	{
+		    	    doc.insertString(0, "Event Code : " + table.getValueAt(row, 0) +"\n", keyWord );
+		    	    doc.insertString(0, "Event Name : " + table.getValueAt(row, 1) +"\n", keyWord );
+		    	    doc.insertString(0, "Event Date : " + table.getValueAt(row, 2) +"\n", keyWord );
+		    	    doc.insertString(0, "Event Location : " + table.getValueAt(row, 3)+"\n", keyWord );
+		    	}
+		    	catch(Exception e) { System.out.println(e); }
+		    }
+		});
         menu1.setLabel("File");
         menuBar1.add(menu1);
 
@@ -61,6 +164,7 @@ public class Event extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(249, 249, 249)
                 .addComponent(jLabel1)
+                .addComponent(jScrollPane)
                 .addContainerGap(277, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -68,6 +172,7 @@ public class Event extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
+                .addComponent(jScrollPane)
                 .addContainerGap())
         );
 
@@ -77,6 +182,20 @@ public class Event extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
+        
+        btnJoinEvent.addActionListener(new java.awt.event.ActionListener() {
+        	public void actionPerformed(java.awt.event.ActionEvent evt) {
+        		btnJoinEventActionPerformed(evt);
+        	}
+
+			private void btnJoinEventActionPerformed(ActionEvent evt) {
+		    	if(JOptionPane.showConfirmDialog(null, "Do you want to join event: \"" + eventCode + "\"", "CONFIRMATION", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+		    		System.out.println("Confirm join the event..............");
+					JOptionPane.showMessageDialog(null, "Request to joint event is sent to Organizer for approval.\nCheck request status through notification.", "InfoBox: CONFIRMATION", JOptionPane.INFORMATION_MESSAGE);
+					// code to join event here.
+		    	} 				
+			}
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -85,6 +204,7 @@ public class Event extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(256, 256, 256)
+                .addComponent(jpanel)
                 .addComponent(jButton2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -93,6 +213,7 @@ public class Event extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 218, Short.MAX_VALUE)
+                .addComponent(jpanel)
                 .addComponent(jButton2)
                 .addGap(58, 58, 58))
         );
@@ -114,7 +235,7 @@ public class Event extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        MainUser m= new MainUser();
+        MainUser m= new MainUser(user);
         m.show(true);
         this.show(false);// TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -147,11 +268,11 @@ public class Event extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+/*        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Event().setVisible(true);
             }
-        });
+        });*/
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

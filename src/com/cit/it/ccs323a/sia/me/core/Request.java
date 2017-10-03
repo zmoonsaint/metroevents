@@ -13,6 +13,7 @@ public class Request {
 	private int requestStatusID;
 	private Date requestDate;
 	private Date requestStatusDate;
+	private String eventCode;
 	private DBRequest dbRequest = new DBRequest();
 	
 	public int getRequestID() {
@@ -22,9 +23,12 @@ public class Request {
 		this.requestID = requestID;
 	}
 	public int getRequestTypeID() {
+		System.out.println("Request.java ------ getRequestTypeID : " + requestTypeID);
 		return requestTypeID;
 	}
 	public void setRequestTypeID(int requestType) {
+		System.out.println("Request.java ------ setRequestTypeID : " + requestType);
+
 		this.requestTypeID = requestType;
 	}
 	public int getUserID() {
@@ -51,6 +55,14 @@ public class Request {
 	public void setRequestStatusDate(Date requestStatusDate) {
 		this.requestStatusDate = requestStatusDate;
 	}
+	
+	public String getEventCode() {
+		return eventCode;
+	}
+	public void setEventCode(String eventCode) {
+		this.eventCode = eventCode;
+	}
+	
 	public boolean createRequest(Request request) throws SQLException {
 		return dbRequest.createRequest(request);
 	}
@@ -59,8 +71,13 @@ public class Request {
 		return dbRequest.verifyRequestIsCreated(request);
 	}
 	
+	public boolean joinEvent(Request request) {
+		return dbRequest.joinEvent(request);
+	}
+	
 	public ArrayList<Request> getAllUserRequests(User user) {
 		return dbRequest.getAllUserRequests(user);
 	}
+
 
 }
