@@ -406,7 +406,7 @@ public class MainUser extends javax.swing.JFrame {
     protected void btnOrganizerActionPerformed(ActionEvent evt) {
     	if(JOptionPane.showConfirmDialog(null, "Do you want to request to organize an event?", "CONFIRMATION", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
     		System.out.println("Confirm request to organize event..............");
-			JOptionPane.showMessageDialog(null, "Request to orgazine event is sent to Admin for approval.\nCheck request status through notification.", "InfoBox: CONFIRMATION", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Request to organize event is sent to Admin for approval.\nCheck request status through notification.", "InfoBox: CONFIRMATION", JOptionPane.INFORMATION_MESSAGE);
 			Request request = new Request();
 			System.out.println("...........................................userIDRequest to Organize" + userID);
 			request.setUserID(userID);

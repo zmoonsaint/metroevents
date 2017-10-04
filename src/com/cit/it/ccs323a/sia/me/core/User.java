@@ -105,6 +105,10 @@ public class User {
 		return dbUser.getUserData(userName);
 	}
 	
+	public User getUserData(int userID) {
+		return dbUser.getUserData(userID);
+	}
+	
 	public boolean updateUserProfile(User user) {
 		return dbUser.updateUserProfile(user);
 	}

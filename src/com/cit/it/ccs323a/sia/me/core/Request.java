@@ -78,6 +78,10 @@ public class Request {
 	public ArrayList<Request> getAllUserRequests(User user) {
 		return dbRequest.getAllUserRequests(user);
 	}
+	
+	public int getLastRequestID() {
+		return dbRequest.getLastRequestID();
+	}
 
 
 }

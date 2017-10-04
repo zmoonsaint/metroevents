@@ -39,7 +39,7 @@ public class DBRequest {
 			//stmt.setTimestamp(3, getCurrentTimestamp());
 			stmt.setInt(3,  1);
 			System.out.println(stmt.toString());
-			stmt.executeUpdate();		
+			stmt.executeUpdate();	
 			return true;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -131,7 +131,7 @@ public class DBRequest {
 		
 		
 		connection = DBAccess.getConnection();
-		sqlStatement = "SELECT * from me_event ORDER by requestID DESC LIMIT 1";
+		sqlStatement = "SELECT requestID from me_request ORDER by requestID DESC LIMIT 1";
 
 		try {
 			System.out.println(connection.toString());

@@ -24,30 +24,79 @@ public class DBEvent {
 
 	}
 
-	public boolean createEvent(Events event) {
+	public boolean createEvent(Events event, User user) {
 		System.out.println("db createEvent(Event event)" + event.getEventCode());
 		
 		connection = DBAccess.getConnection();
 		sqlStatement = "INSERT INTO me_event ("
+				+ "requestID,"
 				+ " eventCode,"
 				+ " eventName,"
 				+ " eventDate,"
 				+ " eventOrganizer,"
 				+ " eventLocation,"
 				+ " eventDescription) VALUES ("
-				+ "?, ?, ?, ?, ?)";
+				+ "?, ?, ?, ?, ?, ?, ?)";
+		Request r = new Request();
+		int requestID = r.getLastRequestID() + 1;
+		System.out.println(r.getLastRequestID());
+		try {
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setInt(1, requestID);
+			stmt.setString(2, event.getEventCode());
+			stmt.setString(3, event.getEventName());
+			stmt.setDate(4, (Date) event.getEventDate());
+			stmt.setInt(5, event.getEventOrganizer());
+			stmt.setString(6, event.getEventLocation());
+			stmt.setString(7, event.getEventDescription());
+			System.out.println(stmt.toString());
+			stmt.executeUpdate();
+			
+			if(user.getUserType().equals("organizer")) {
+				System.out.println("User Type is Organizer. Added for approval");
+				r.setUserID(user.getUserAge());
+				r.setRequestTypeID(2);
+				r.setRequestStatusID(1);
+				r.createRequest(r);
+			} else {
+				r.setUserID(user.getUserAge());
+				r.setRequestTypeID(2);
+				r.setRequestStatusID(2);
+				r.createRequest(r);
+			}
+			
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean updateEvent(Events event, User user) {
+		System.out.println("db updateEvent(Event event)" + event.getEventCode());
 		
+		connection = DBAccess.getConnection();
+		
+		sqlStatement = "UPDATE me_event "
+				+ "SET eventCode = ?, "
+				+ "eventName = ?, "
+				+ "eventDate = ?, "
+				+ "eventLocation = ?, "
+				+ "eventDescription = ?  "
+				+ "WHERE eventID = ?";
+
 		try {
 			stmt = connection.prepareStatement(sqlStatement);
 			stmt.setString(1, event.getEventCode());
 			stmt.setString(2, event.getEventName());
-			stmt.setDate(3, event.getEventDate());
-			stmt.setInt(4, event.getEventOrganizer());
-			stmt.setString(5, event.getEventLocation());
-			stmt.setString(6, event.getEventDescription());
-
+			stmt.setDate(3, (Date) event.getEventDate());
+			stmt.setString(4, event.getEventLocation());
+			stmt.setString(5, event.getEventDescription());
+			stmt.setInt(6, event.getEventID());
 			System.out.println(stmt.toString());
 			stmt.executeUpdate();
+
 			return true;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -78,17 +127,58 @@ public class DBEvent {
 		return true;			
 	}
 
+	public int getEventID(String eventCode) {
+		
+		connection = DBAccess.getConnection();
+		sqlStatement = "Select * from me_event where eventCode = ?";
+		
+		try {
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setString(1, eventCode);
+			resultset = stmt.executeQuery();
+			System.out.println(stmt.toString());
+			while(resultset.next()) {
+					return resultset.getInt("eventID");
+			}
 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;	
+	}
+	
+	public void deleteEvent(String eventCode) {
+		
+		connection = DBAccess.getConnection();
+		sqlStatement = "DELETE FROM me_event WHERE eventCode = ?";
+		
+		try {
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setString(1, eventCode);
+			stmt.executeUpdate();
+			System.out.println(stmt.toString());
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public ArrayList<Events> getAllUserEvents(User user) {
 		connection = DBAccess.getConnection();
 		ArrayList<Events> userEvents  = null;
 
-		sqlStatement = "select * from me_event where eventOrganizer = ?";
-
 		try {
 			System.out.println(connection.toString());
-			stmt = connection.prepareStatement(sqlStatement);
-			stmt.setInt(1, user.getUserID());
+			if(user.getUserType().equals("administrator")) {
+				sqlStatement = "select * from me_event";
+				stmt = connection.prepareStatement(sqlStatement);
+			} else {
+				sqlStatement = "select * from me_event where eventOrganizer = ?";
+				stmt = connection.prepareStatement(sqlStatement);
+				stmt.setInt(1, user.getUserID());
+			}
 			resultset = stmt.executeQuery();
 			System.out.println(stmt.toString());
 			userEvents = new ArrayList<>();
@@ -98,6 +188,7 @@ public class DBEvent {
 				uEvent.setEventName(resultset.getString("eventName"));
 				uEvent.setEventDate(resultset.getDate("eventDate"));
 				uEvent.setEventLocation(resultset.getString("eventLocation"));
+				uEvent.setEventOrganizer(resultset.getInt("eventOrganizer"));
 				uEvent.setEventDescription(resultset.getString("eventDescription"));
 				uEvent.setEventDateAdd(resultset.getTimestamp("eventDateAdded"));
 				
@@ -130,6 +221,44 @@ public class DBEvent {
 			userEvents = new ArrayList<>();
 			while (resultset.next()) {
 				Events uEvent = new Events();
+				uEvent.setEventID(resultset.getInt("eventID"));
+				uEvent.setEventCode(resultset.getString("eventCode"));
+				uEvent.setEventName(resultset.getString("eventName"));
+				uEvent.setEventDate(resultset.getDate("eventDate"));
+				uEvent.setEventLocation(resultset.getString("eventLocation"));
+				uEvent.setEventDescription(resultset.getString("eventDescription"));
+				uEvent.setEventOrganizer(resultset.getInt("eventOrganizer"));
+				uEvent.setEventDateAdd(resultset.getTimestamp("eventDateAdded"));
+				userEvents.add(uEvent);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return userEvents;			
+	}
+	
+	public ArrayList<Events> getAllEventsByOrganizer(int eventOrganizer) {
+		connection = DBAccess.getConnection();
+		ArrayList<Events> userEvents  = null;
+
+		sqlStatement = "Select eventCode, eventName, eventDate, eventLocation, eventDescription, eventOrganizer, eventDateAdded "
+				+ "from me_request "
+				+ "JOIN me_event ON "
+				+ "me_request.requestID = me_event.requestID "
+				+ "where eventOrganizer = ?";
+
+		try {
+			System.out.println(connection.toString());
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setInt(1, eventOrganizer);
+			resultset = stmt.executeQuery();
+			System.out.println(stmt.toString());
+			userEvents = new ArrayList<>();
+			while (resultset.next()) {
+				Events uEvent = new Events();
+				uEvent.setEventID(resultset.getInt("eventID"));
 				uEvent.setEventCode(resultset.getString("eventCode"));
 				uEvent.setEventName(resultset.getString("eventName"));
 				uEvent.setEventDate(resultset.getDate("eventDate"));
@@ -148,6 +277,7 @@ public class DBEvent {
 	}	
 	
 	public boolean verifyEventCodeExist(String eventCode) {
+		System.out.println(".............................Event Code: " + eventCode);
 		connection = DBAccess.getConnection();
 		sqlStatement = "select * from me_event where eventCode = ?";
 		

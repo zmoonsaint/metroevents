@@ -12,6 +12,7 @@ import com.cit.it.ccs323a.sia.me.ui.NotificationOrg;
 
 public class Events {
 
+	private int eventID;
 	private String eventCode;
 	private String eventName;
 	private Date eventDate;
@@ -76,22 +77,47 @@ public class Events {
 		this.eventDescription = eventDescription;
 	}
 	
+	public int getEventID() {
+		return eventID;
+	}
+
+	public void setEventID(int eventID) {
+		this.eventID = eventID;
+	}
+	
+	
+	public int getEventID(String eventCode) {
+		return dbEvent.getEventID(eventCode);
+	}
 	//create
-	public boolean createEvent(Events event) {
-		return dbEvent.createEvent(event);
+	public boolean createEvent(Events event, User user) {
+		return dbEvent.createEvent(event, user);
 	}
 	
 	public boolean verifyEventCodeExist(String eventCode) {
 		return dbEvent.verifyEventCodeExist(eventCode);
 	}
 	
+	public ArrayList<Events> getAllUserEvents(User user) {
+		return dbEvent.getAllUserEvents(user);
+	}
 	public ArrayList<Events> getAllEventsByStatus(int eventStatus) {
 		return dbEvent.getAllEventsByStatus(eventStatus);
 	}
+	
+	public ArrayList<Events> getAllEventsByOrganizer(int eventOrganizer) {
+		return dbEvent.getAllEventsByOrganizer(eventOrganizer);
+	}
 	//search
 	//update
+	public boolean updateEvent(Events event, User user) {
+		return dbEvent.updateEvent(event, user);
+	}
 	//delete
-
+	public void deleteEvent(String eventCode) {
+		dbEvent.deleteEvent(eventCode);
+	}
+	
 	@SuppressWarnings("deprecation")
 	public static void main(String [] args) {
 
@@ -107,7 +133,6 @@ public class Events {
 					e.setEventLocation("test event location");
 					e.setEventOrganizer(5);
 					e.setEventDate(sql);
-					System.out.println(e.dbEvent.createEvent(e));
 					
 					Request requests = new Request();
 					requests.setUserID(5);
@@ -159,6 +184,8 @@ public class Events {
 			no.setVisible(true);
 
 	}
+
+
 
 
 	

@@ -39,7 +39,7 @@ import com.cit.it.ccs323a.sia.me.core.Events;
 import com.cit.it.ccs323a.sia.me.core.Request;
 import com.cit.it.ccs323a.sia.me.core.User;
 
-public class ViewEvents  extends JPanel
+public class ViewNotifications  extends JPanel
 implements ActionListener {
 	
 	 private String newline = "\n";
@@ -84,7 +84,7 @@ implements ActionListener {
 	 
 	    protected JLabel actionLabel;
 	 
-	    public ViewEvents(User user) {
+	    public ViewNotifications(User user) {
 	    	this.user = user;
 	    	System.out.println("..........................ViewEvents" + user.getUserID() + " : " + "userType: " + user.getUserType() + "; userName: "+  user.getUserName());
 
@@ -465,7 +465,7 @@ implements ActionListener {
 	        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	 
 	        //Add content to the window.
-	        frame.add(new ViewEvents(user));
+	        frame.add(new ViewNotifications(user));
 	 
 	        //Display the window.
 	        frame.pack();

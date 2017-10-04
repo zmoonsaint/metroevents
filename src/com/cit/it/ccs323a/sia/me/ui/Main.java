@@ -448,9 +448,10 @@ public class Main extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
     	System.out.println("Event button is clicked");
-        Event v= new Event(user);
-        v.show(true);
-        this.show(false);        // TODO add your handling code here:
+    	user.setUserName(previousUsername);
+    	 ViewEvents v= new ViewEvents(user);
+         v.createAndShowGUI(true);
+         this.show(false);   
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed

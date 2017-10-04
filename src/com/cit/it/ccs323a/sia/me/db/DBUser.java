@@ -137,6 +137,7 @@ public class DBUser {
 	}
 	
 	public User getUserData(String userName) {
+		System.out.println("getUserData(String " +userName+")");
 		
 		User user = new User();
 		connection = DBAccess.getConnection();
@@ -145,6 +146,36 @@ public class DBUser {
 		try {
 			stmt = connection.prepareStatement(sqlStatement);
 			stmt.setString(1, userName);
+			resultset = stmt.executeQuery();
+			while(resultset.next()) {
+				user.setUserID(resultset.getInt("userID"));
+				user.setUserFullName(resultset.getString("userFullName"));
+				user.setUserAge(resultset.getInt("userAge"));
+				user.setUserBirthdate(resultset.getString("userBirthdate"));
+				user.setUserAddress(resultset.getString("userAddress"));
+				user.setUserEmail(resultset.getString("userEmail"));
+				user.setUserName(resultset.getString("userName"));
+				user.setUserPassword(resultset.getString("userPassword"));
+				user.setUserType(resultset.getString("userType"));
+				return user;
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;	
+	}
+	
+	public User getUserData(int userID) {
+		
+		User user = new User();
+		connection = DBAccess.getConnection();
+		sqlStatement = "Select * from me_user LEFT JOIN me_usertype ON me_usertype.userTypeID = me_user.userTypeID where me_user.userID = ?";
+		
+		try {
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setInt(1, userID);
 			resultset = stmt.executeQuery();
 			while(resultset.next()) {
 				user.setUserID(resultset.getInt("userID"));
