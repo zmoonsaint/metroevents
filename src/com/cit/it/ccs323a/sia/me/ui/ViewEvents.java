@@ -68,6 +68,7 @@ implements ActionListener {
     	JTable table;
     	Object[] rowData;
     	String previousCodeName;
+    	int selectedRow;
 
 	    Events events = new Events();
 	    
@@ -173,8 +174,9 @@ implements ActionListener {
 	        	btnDeleteEvent.addActionListener(this);
 
 	        } else {
+	        	txtEventCode.setEnabled(false);
 	        	btnJoinEvent = new JButton("Join Event");
-	        	btnJoinEvent.setEnabled(false);
+	        	btnJoinEvent.setEnabled(true);
 	        	textControlsPane.add(btnJoinEvent);
 		        btnJoinEvent.addActionListener(this);
 	        }
@@ -218,11 +220,12 @@ implements ActionListener {
 			        int col = table.columnAtPoint(evt.getPoint());		       
 			    	eventCode = (String) table.getValueAt(row, 0);
 			    	previousCodeName = eventCode;
+			    	selectedRow = row;
 			    	String eventName = (String) table.getValueAt(row, 1);
 			    	Date eventDate =  (Date) table.getValueAt(row, 2);
 			    	String eventLocation = (String) table.getValueAt(row, 3);
 			    	String eventDescription = (String) table.getValueAt(row, 4);
-			    	int eventOrganizer = (int) table.getValueAt(row, 5);
+			    	String eventOrganizer = (String) table.getValueAt(row, 5);
 			    	System.out.println(eventCode);
 			    	
 			    	txtEventCode.setText(eventCode);
@@ -231,9 +234,18 @@ implements ActionListener {
 			    	txtEventLocation.setText(eventLocation);
 			    	textArea.setText(eventDescription);
 			    	
-			    	User tempUser = user.getUserData(eventOrganizer);
-			    	System.out.println("EventCode: "+ eventCode + ";" + "Organizer : "+ eventOrganizer+ "User get Data: " + user.getUserData(eventOrganizer));
-			    	txtEventOrganizer.setText(tempUser.getUserFullName());
+			    	try {
+						if(user.alreadyJoinEvent(user.getUserID(), eventCode)) {
+							btnJoinEvent.setEnabled(false);
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			    		
+			    	
+			    	System.out.println("EventCode: "+ eventCode + ";" + "Organizer : "+ eventOrganizer + "User get Data: " + user.getUserData(eventOrganizer));
+			    	txtEventOrganizer.setText(eventOrganizer);
 			    	
 
 			  }});
@@ -386,7 +398,6 @@ implements ActionListener {
 			        		Date eDate = new java.util.Date();
 			        		Object[] insertRowData = {eventCode, eventName, eventDate, eventLocation, eventDescription, eventOrganizer, eDate};
 			        		tableModel.addRow(insertRowData);
-			        		
 			        	}
 			        	
 					} catch (ParseException e1) {
@@ -400,14 +411,22 @@ implements ActionListener {
 	         	if(JOptionPane.showConfirmDialog(null, "Do you want to delete event " + eventCode + "?", "CONFIRMATION", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 	        		System.out.println("Confirm request to delete event..............");
 		        	orgEvent.deleteEvent(eventCode);
-		        	setTableData();
+		        	tableModel.removeRow(selectedRow);
 	    			JOptionPane.showMessageDialog(null, "Event: "+ eventCode + " was successfully deleted.", "InfoBox: CONFIRMATION", JOptionPane.INFORMATION_MESSAGE);
 	        	} 
 	        	
 	        } else if (e.getActionCommand().equals("Join Event")) {
 	    		System.out.println("Confirm join the event..............");
-				JOptionPane.showMessageDialog(null, "Request to joint event is sent to Organizer for approval.\nCheck request status through notification.", "InfoBox: CONFIRMATION", JOptionPane.INFORMATION_MESSAGE);
-				// code to join event here.
+				JOptionPane.showMessageDialog(null, "Request to joint event is sent to Organizer or Admin for approval.\nCheck request status through notification.", "InfoBox: CONFIRMATION", JOptionPane.INFORMATION_MESSAGE);
+				if(!eventCode.equals("")) {
+					try {
+						user.userJoinEvent(user.getUserID(), eventCode);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+					
 	        } else if (e.getActionCommand().equals("Back")) {
 				frame.setVisible(false);
 				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -431,14 +450,18 @@ implements ActionListener {
 	    	
 	    	System.out.print("setTableData inside");
 	  
-	    	
-	        if (user.getUserType().equals("administrator") || user.getUserType().equals("organizer") ) {
-	        	eventArr = events.getAllUserEvents(user);
-	        	System.out.println("eventArr = events.getAllUserEvents(user);");
-	        } else {
-	        	eventArr = events.getAllEventsByStatus(2);
-	        	System.out.println("eventArr = events.getAllEventsByStatus(2);");
-	        }
+	    	switch (user.getUserType().toLowerCase()) {
+	    	case "administrator":
+	    		System.out.println("administrator");
+	    		eventArr = events.getAllUserEvents(user);
+	    		break;
+	    	case "organizer":
+	    		eventArr = events.getAllEventsByOrganizer(user.getUserID());
+	    		break;
+	    	default:
+	    		eventArr = events.getAllEventsByStatus(2);
+	    		break;
+	    	}
 	    	
 	        tableModel = new DefaultTableModel(columnNames, 0);
 	    	
@@ -449,7 +472,8 @@ implements ActionListener {
 	    		String eventLocation = eventArr.get(i).getEventLocation();
 	    		String eventDescription = eventArr.get(i).getEventDescription();
 	   
-	    		int eventOrganizer = eventArr.get(i).getEventOrganizer();
+				User tempUser = user.getUserData(eventArr.get(i).getEventOrganizer());
+				String eventOrganizer = tempUser.getUserFullName();
 	    		
 	    		Date eventDateAdded = eventArr.get(i).getEventDateAdd();
    		   		
@@ -462,7 +486,7 @@ implements ActionListener {
     
 	    public void createAndShowGUI(boolean open) {
 	        //Create and set up the window.
-	        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	 
 	        //Add content to the window.
 	        frame.add(new ViewEvents(user));

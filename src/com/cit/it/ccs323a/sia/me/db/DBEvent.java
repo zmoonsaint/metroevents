@@ -54,12 +54,12 @@ public class DBEvent {
 			
 			if(user.getUserType().equals("organizer")) {
 				System.out.println("User Type is Organizer. Added for approval");
-				r.setUserID(user.getUserAge());
+				r.setUserID(user.getUserID());
 				r.setRequestTypeID(2);
 				r.setRequestStatusID(1);
 				r.createRequest(r);
 			} else {
-				r.setUserID(user.getUserAge());
+				r.setUserID(user.getUserID());
 				r.setRequestTypeID(2);
 				r.setRequestStatusID(2);
 				r.createRequest(r);
@@ -151,7 +151,11 @@ public class DBEvent {
 	public void deleteEvent(String eventCode) {
 		
 		connection = DBAccess.getConnection();
-		sqlStatement = "DELETE FROM me_event WHERE eventCode = ?";
+		sqlStatement = "DELETE a.*, b.* FROM me_event a"
+				+ " JOIN me_request b"
+				+ " ON a.requestID = b.requestID"
+				+ " AND a.eventCode = ?"
+				+ " AND b.requestTypeID = 2";
 		
 		try {
 			stmt = connection.prepareStatement(sqlStatement);
@@ -184,6 +188,7 @@ public class DBEvent {
 			userEvents = new ArrayList<>();
 			while (resultset.next()) {
 				Events uEvent = new Events();
+				uEvent.setEventID(resultset.getInt("eventID"));
 				uEvent.setEventCode(resultset.getString("eventCode"));
 				uEvent.setEventName(resultset.getString("eventName"));
 				uEvent.setEventDate(resultset.getDate("eventDate"));
@@ -206,7 +211,7 @@ public class DBEvent {
 		connection = DBAccess.getConnection();
 		ArrayList<Events> userEvents  = null;
 
-		sqlStatement = "Select eventCode, eventName, eventDate, eventLocation, eventDescription, eventOrganizer, eventDateAdded "
+		sqlStatement = "Select eventID, eventCode, eventName, eventDate, eventLocation, eventDescription, eventOrganizer, eventDateAdded "
 				+ "from me_request "
 				+ "JOIN me_event ON "
 				+ "me_request.requestID = me_event.requestID "
@@ -243,7 +248,7 @@ public class DBEvent {
 		connection = DBAccess.getConnection();
 		ArrayList<Events> userEvents  = null;
 
-		sqlStatement = "Select eventCode, eventName, eventDate, eventLocation, eventDescription, eventOrganizer, eventDateAdded "
+		sqlStatement = "Select eventID, eventCode, eventName, eventDate, eventLocation, eventDescription, eventOrganizer, eventDateAdded "
 				+ "from me_request "
 				+ "JOIN me_event ON "
 				+ "me_request.requestID = me_event.requestID "

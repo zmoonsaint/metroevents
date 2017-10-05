@@ -425,8 +425,10 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNotificationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNotificationActionPerformed
-        NotificationOrg n = new NotificationOrg(user);
-        n.show(true);
+        //NotificationOrg n = new NotificationOrg(user);
+       // n.show(true);
+    	ViewNotifications n = new ViewNotifications(user);
+    	n.createAndShowGUI(true);
         this.show(false);// TODO add your handling code here:
     }//GEN-LAST:event_btnNotificationActionPerformed
     

@@ -85,12 +85,20 @@ public class User {
 		return dbUser.createNewUser(user);
 	}
 	
+	public boolean userJoinEvent(int userID, String eventCode) throws SQLException {
+		return dbUser.userJoinEvent(userID, eventCode);
+	}
+	
 	public boolean searchUser(String username) {
 		return dbUser.searchUser(username);
 	}
 	
 	public boolean verifyLoginCredentials(String userName, String password) {
 		return dbUser.verifyLoginCredentials(userName, password);	
+	}
+	
+	public int getUserAccountStatus(String userName) {
+		return dbUser.getUserAccountStatus(userName);
 	}
 	
 	public String getUserType(String userName) {
@@ -111,6 +119,18 @@ public class User {
 	
 	public boolean updateUserProfile(User user) {
 		return dbUser.updateUserProfile(user);
+	}
+	
+	public int getLastUserID() {
+		return dbUser.getLastUserID();
+	}
+	
+	public boolean setUserAccountType(String username, int requestType) {
+		return dbUser.setUserAccountType(username, requestType);
+	}
+	
+	public boolean alreadyJoinEvent(int userID, String eventCode) throws SQLException {
+		return dbUser.alreadyJoinEvent(userID, eventCode);
 	}
 
 }

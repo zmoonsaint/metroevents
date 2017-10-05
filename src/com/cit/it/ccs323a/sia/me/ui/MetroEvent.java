@@ -72,9 +72,15 @@ public class MetroEvent extends javax.swing.JFrame {
                 	} else {
                 		if(!user.searchUser(txtUsername.getText())) {
                 			JOptionPane.showMessageDialog(null, "Username does not exist!", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
-                		} else if (user.searchUser(txtUsername.getText()) && 
-                				(user.verifyLoginCredentials(txtUsername.getText(), pwdPassword.getText()) == false)) {
-                			JOptionPane.showMessageDialog(null, "Wrong password!", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
+                		} else {
+                			if(user.searchUser(txtUsername.getText()) && user.getUserAccountStatus(txtUsername.getText().toLowerCase()) != 2) {
+                    			JOptionPane.showMessageDialog(null, "User account is pending for Approval.", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
+                    		}  else {
+                    			if (user.searchUser(txtUsername.getText()) && 
+                    					(user.verifyLoginCredentials(txtUsername.getText(), pwdPassword.getText()) == false)) {
+                    				JOptionPane.showMessageDialog(null, "Wrong password!", "InfoBox: Login", JOptionPane.ERROR_MESSAGE);
+                    			}
+                    		}
                 		}
                 	}
                 }

@@ -84,7 +84,7 @@ public class NotificationOrg extends javax.swing.JFrame {
     	
    	
 		final JTable table = new JTable(tableModel);
-		table.setPreferredScrollableViewportSize(new Dimension(500, 100));
+		table.setPreferredScrollableViewportSize(new Dimension(750, 1000));
 		table.setFillsViewportHeight(true);
 		JScrollPane jScrollPane = new JScrollPane(table);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);

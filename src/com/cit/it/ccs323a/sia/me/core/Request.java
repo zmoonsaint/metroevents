@@ -23,12 +23,9 @@ public class Request {
 		this.requestID = requestID;
 	}
 	public int getRequestTypeID() {
-		System.out.println("Request.java ------ getRequestTypeID : " + requestTypeID);
 		return requestTypeID;
 	}
 	public void setRequestTypeID(int requestType) {
-		System.out.println("Request.java ------ setRequestTypeID : " + requestType);
-
 		this.requestTypeID = requestType;
 	}
 	public int getUserID() {
@@ -79,8 +76,24 @@ public class Request {
 		return dbRequest.getAllUserRequests(user);
 	}
 	
+	public ArrayList<Request> getAllUserRequestsForOrganizer(int userID) {
+		return dbRequest.getAllUserRequestsForOrganizer(userID);
+	}
+	
+	public ArrayList<Request> getAllUserRequests() {
+		return dbRequest.getAllUserRequests();
+	}
+	
 	public int getLastRequestID() {
 		return dbRequest.getLastRequestID();
+	}
+	
+	public ArrayList<Request> getAllUserRequestsByStatus(int statusID) {
+		return dbRequest.getAllUserRequestsByStatus(statusID);
+	}
+	
+	public boolean processRequest(int requestID, int requestStatus) {
+		return dbRequest.processRequest(requestID, requestStatus);
 	}
 
 

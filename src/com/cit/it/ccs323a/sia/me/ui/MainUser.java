@@ -10,6 +10,7 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.cit.it.ccs323a.sia.me.constants.RequestStatus;
@@ -431,7 +432,9 @@ public class MainUser extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void btnNotificationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNotificationActionPerformed
-        NotificationOrg n = new NotificationOrg(user);
+        //NotificationOrg n = new NotificationOrg(user);
+    	ViewNotifications n = new ViewNotifications(user);
+    	n.createAndShowGUI(true);
         n.show(true);
         this.show(false);// TODO add your handling code here:
     }//GEN-LAST:event_btnNotificationActionPerformed
