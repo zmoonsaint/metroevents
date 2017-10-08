@@ -89,6 +89,10 @@ public class Events {
 	public int getEventID(String eventCode) {
 		return dbEvent.getEventID(eventCode);
 	}
+	
+	public String getRequestedEventCode(int requestID) {
+		return dbEvent.getRequestedEventCode(requestID);
+	}
 	//create
 	public boolean createEvent(Events event, User user) {
 		return dbEvent.createEvent(event, user);
@@ -118,6 +122,9 @@ public class Events {
 		dbEvent.deleteEvent(eventCode);
 	}
 	
+	public int getEventCodeRequestID(String eventCode) {
+		return dbEvent.getEventCodeRequestID(eventCode);
+	}
 	@SuppressWarnings("deprecation")
 	public static void main(String [] args) {
 

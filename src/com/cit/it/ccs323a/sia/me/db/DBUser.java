@@ -172,7 +172,7 @@ public class DBUser {
 	}
 	
 	public User getUserData(String userName) {
-		System.out.println("getUserData(String " +userName+")");
+		System.out.println("getUserData(String " + userName +")");
 		
 		User user = new User();
 		connection = DBAccess.getConnection();

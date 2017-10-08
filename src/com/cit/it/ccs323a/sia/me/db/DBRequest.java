@@ -271,6 +271,51 @@ public class DBRequest {
 		return 0;
 	}
 	
+	public String getRequestType(int requestTypeID) {
+		
+		connection = DBAccess.getConnection();
+		sqlStatement = "SELECT requestType from me_requesttype where requestTypeID = ?";
+
+		try {
+			System.out.println(connection.toString());
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setInt(1, requestTypeID);
+			resultset = stmt.executeQuery();
+			System.out.println(stmt.toString());
+			if(resultset.next()) {
+				return resultset.getString("requestType");
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+	}	
+	
+	public int getRequestTypeID(String requestType) {
+		
+		connection = DBAccess.getConnection();
+		sqlStatement = "SELECT requestTypeID from me_requesttype where requestType = ?";
+
+		try {
+			System.out.println(connection.toString());
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setString(1, requestType);
+			resultset = stmt.executeQuery();
+			System.out.println(stmt.toString());
+			if(resultset.next()) {
+				return resultset.getInt("requestTypeID");
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}	
+	
+	
 	
 	public boolean processRequest(int requestID, int requestStatus) {
 		System.out.println("db processRequest(Event requestID)" + requestID + ", requestStatus " + requestStatus);
@@ -303,5 +348,44 @@ public class DBRequest {
 		java.util.Date today = new java.util.Date();
 		return new java.sql.Timestamp(today.getTime());
 	}
+
+	public String getStatusString(int statusID) {
+		connection = DBAccess.getConnection();
+		sqlStatement = "SELECT requestStatus from request_status where requestStatusID= ?";
+
+		try {
+			System.out.println(connection.toString());
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setInt(1, statusID);
+			resultset = stmt.executeQuery();
+			System.out.println(stmt.toString());
+			if(resultset.next()) {
+				return resultset.getString("requestStatus");
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+	}
 	
+	public void updateRequestStatus(int requestID, int requestStatus) {
+		connection = DBAccess.getConnection();
+		sqlStatement = "Update me_request "
+				+ "SET requestStatusID = ? "
+				+ "where requestID = ? ";
+
+		try {
+			System.out.println(connection.toString());
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setInt(1, requestStatus);
+			stmt.setInt(2, requestID);
+			resultset = stmt.executeQuery();
+			System.out.println(stmt.toString());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

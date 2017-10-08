@@ -60,6 +60,7 @@ public class Request {
 		this.eventCode = eventCode;
 	}
 	
+	
 	public boolean createRequest(Request request) throws SQLException {
 		return dbRequest.createRequest(request);
 	}
@@ -74,6 +75,14 @@ public class Request {
 	
 	public ArrayList<Request> getAllUserRequests(User user) {
 		return dbRequest.getAllUserRequests(user);
+	}
+	
+	public String getRequestType(int requestTypeID) {
+		return dbRequest.getRequestType(requestTypeID);
+	}
+	
+	public int getRequestTypeID(String requestType) {
+		return dbRequest.getRequestTypeID(requestType);
 	}
 	
 	public ArrayList<Request> getAllUserRequestsForOrganizer(int userID) {
@@ -95,6 +104,13 @@ public class Request {
 	public boolean processRequest(int requestID, int requestStatus) {
 		return dbRequest.processRequest(requestID, requestStatus);
 	}
+	
+	public String getStatusString(int statusID) {
+		return dbRequest.getStatusString(statusID);
+	}
 
 
+	public void updateRequestStatus(int requestID, int requestStatus) {
+		dbRequest.updateRequestStatus(requestID, requestStatus);
+	}
 }

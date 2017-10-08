@@ -71,7 +71,7 @@ implements ActionListener {
     	int selectedRow;
 
 	    Events events = new Events();
-	    
+	    Request request = new Request();
 	    
 		String[] columnNames = {"Event Code", 
 				"Event Name",
@@ -411,6 +411,7 @@ implements ActionListener {
 	         	if(JOptionPane.showConfirmDialog(null, "Do you want to delete event " + eventCode + "?", "CONFIRMATION", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 	        		System.out.println("Confirm request to delete event..............");
 		        	orgEvent.deleteEvent(eventCode);
+		        	request.updateRequestStatus(orgEvent.getEventCodeRequestID(eventCode), 4);
 		        	tableModel.removeRow(selectedRow);
 	    			JOptionPane.showMessageDialog(null, "Event: "+ eventCode + " was successfully deleted.", "InfoBox: CONFIRMATION", JOptionPane.INFORMATION_MESSAGE);
 	        	} 

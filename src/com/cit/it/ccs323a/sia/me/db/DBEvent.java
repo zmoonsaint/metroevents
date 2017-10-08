@@ -148,6 +148,48 @@ public class DBEvent {
 		return 0;	
 	}
 	
+	public String getRequestedEventCode(int requestID) {
+		
+		connection = DBAccess.getConnection();
+		sqlStatement = "Select eventCode from me_event where requestID = ?";
+		
+		try {
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setInt(1, requestID);
+			resultset = stmt.executeQuery();
+			System.out.println(stmt.toString());
+			while(resultset.next()) {
+					return resultset.getString("eventCode");
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";	
+	}
+
+	public int getEventCodeRequestID(String eventCode) {
+		
+		connection = DBAccess.getConnection();
+		sqlStatement = "Select requestID from me_event where eventCode = ?";
+		
+		try {
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setString(1, eventCode);
+			resultset = stmt.executeQuery();
+			System.out.println(stmt.toString());
+			while(resultset.next()) {
+					return resultset.getInt("requestID");
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;	
+	}
+	
 	public void deleteEvent(String eventCode) {
 		
 		connection = DBAccess.getConnection();
@@ -162,7 +204,6 @@ public class DBEvent {
 			stmt.setString(1, eventCode);
 			stmt.executeUpdate();
 			System.out.println(stmt.toString());
-
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

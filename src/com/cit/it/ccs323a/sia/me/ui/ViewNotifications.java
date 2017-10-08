@@ -272,26 +272,38 @@ implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		System.out.println(e.getActionCommand());
 
-		int requestID = Integer.valueOf(txtRequestID.getText());
-		String requestor = txtRequestor.getText();
-		int requestType = Integer.valueOf(txtRequestType.getText());
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		java.util.Date txtfieldAsDate = null;
-		//String eventDescription = textArea.getText();
-		String eventLocation = txtEvent.getText();
-		int eventOrganizer = user.getUserID();
-
-    	
-
 		//String eventDescription = txtArea.getText();
 		if(e.getActionCommand().equals("Approve Request")) {
+			int requestID = Integer.valueOf(txtRequestID.getText());
+			String requestor = txtRequestor.getText();
+			System.out.println(txtRequestType.getText());
+			int requestType = request.getRequestTypeID(txtRequestType.getText());
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			java.util.Date txtfieldAsDate = null;
+			//String eventDescription = textArea.getText();
+			String eventLocation = txtEvent.getText();
+			int eventOrganizer = user.getUserID();
+
 			request.processRequest(requestID, 2);
 			if(requestType == 1 || requestType == 4 || requestType == 5 ) {
 				user.setUserAccountType(requestor, requestType);
+	        	tableModel.removeRow(selectedRow);
 			}
 		} else if (e.getActionCommand().equals("Decline Request")) {
+			int requestID = Integer.valueOf(txtRequestID.getText());
+			String requestor = txtRequestor.getText();
+			System.out.println(txtRequestType.getText());
+			int requestType = request.getRequestTypeID(txtRequestType.getText());
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			java.util.Date txtfieldAsDate = null;
+			//String eventDescription = textArea.getText();
+			String eventLocation = txtEvent.getText();
+			int eventOrganizer = user.getUserID();
+
 			request.processRequest(requestID, 3);
 			System.out.println("Decline");
+        	tableModel.removeRow(selectedRow);
+
 		} /*else if (e.getActionCommand().equals("Cancel Event")) {
 			if(JOptionPane.showConfirmDialog(null, "Do you want to cancel event " + eventCode + "?", "CONFIRMATION", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				System.out.println("Confirm request to delete event..............");
@@ -307,8 +319,16 @@ implements ActionListener {
 		} else if (e.getActionCommand().equals("Back")) {
 			frame.setVisible(false);
 			frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-			Main m= new Main(user);
-			m.show(true);
+			if(user.getUserType().equals("administrator")|| user.getUserType().equals("organizer")) {
+				System.out.println("User Type................ " + user.getUserType());
+				Main m= new Main(user);
+				m.show(true);
+
+			} else {
+				MainUser m= new MainUser(user);
+				m.show(true);
+
+			}
 		} else  {
 			System.out.println(e.getSource());
 		}
@@ -347,18 +367,25 @@ implements ActionListener {
 		
 			int requestID = eventArr.get(i).getRequestID();
 			int requestorID = eventArr.get(i).getUserID();
-			int RequestType = eventArr.get(i).getRequestTypeID();
+			
+			Request objRequest = new Request();
+			objRequest.getRequestType(requestID);
+			String RequestType = objRequest.getRequestType(eventArr.get(i).getRequestTypeID());
+
+
 			
 			
 			String event = "";
-			if(RequestType == 2) {
-				event  = "";//create query to get event code
+			if(eventArr.get(i).getRequestTypeID() == 2 || eventArr.get(i).getRequestTypeID() == 3 ) {
+				Events objEvent = new Events();
+				event  = objEvent.getRequestedEventCode(requestID);
+				System.out.println("Event............." + eventArr.get(i).getRequestTypeID() + event );
 			}
 			
 			System.out.println(eventArr.get(i).getRequestStatusID());
 			int stat = eventArr.get(i).getRequestStatusID();
-			String status;
-			switch (stat) {
+			String status = objRequest.getStatusString(stat);
+			/*switch (stat) {
 			case 1:
 				status = "PENDING"; 
 				System.out.println(status);break;
@@ -370,7 +397,7 @@ implements ActionListener {
 				status = "CANCELLED"; break;
 			default: 
 				status = "";
-			}
+			}*/
 
 			User tempUser = user.getUserData(requestorID);
 			String Requestor = tempUser.getUserFullName();
