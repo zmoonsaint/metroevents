@@ -11,7 +11,7 @@ import com.mysql.jdbc.Statement;
 public class DBAccess {
 	
     private static DBAccess instance = new DBAccess();
-    public static final String URL = "jdbc:mysql://localhost:3306/metroevents";
+    public static final String URL = "jdbc:mysql://localhost:3306/metroevents_final";
     public static final String USER = "me_events";
     public static final String PASSWORD = "0rdbV0S82NBBYeKf";
     public static final String DRIVER_CLASS = "com.mysql.jdbc.Driver"; 
