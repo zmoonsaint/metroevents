@@ -428,11 +428,19 @@ implements ActionListener {
 					}
 				}
 					
-	        } else if (e.getActionCommand().equals("Back")) {
+			} else if (e.getActionCommand().equals("Back")) {
 				frame.setVisible(false);
 				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				Main m= new Main(user);
-			     m.show(true);
+				if(user.getUserType().equals("administrator")|| user.getUserType().equals("organizer")) {
+					System.out.println("User Type................ " + user.getUserType());
+					Main m= new Main(user);
+					m.show(true);
+
+				} else {
+					MainUser m= new MainUser(user);
+					m.show(true);
+
+				}
 	        } else  {
 	        	System.out.println(e.getSource());
 	        }
