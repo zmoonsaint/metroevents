@@ -283,6 +283,13 @@ public class DBUser {
 	
 	public boolean setUserAccountType(String username, int requestType) {
 		System.out.println("db setUserAccountType(requestType) " + requestType);
+		int userType = 5;
+		
+		switch(requestType) {
+		case 1: userType = 2; break;
+		case 4: userType = 1; break;
+		case 5: userType = 3; break;
+		}
 		
 		connection = DBAccess.getConnection();
 		sqlStatement = "UPDATE me_user "
@@ -291,7 +298,7 @@ public class DBUser {
 
 		try {
 			stmt = connection.prepareStatement(sqlStatement);
-			stmt.setInt(1, requestType);
+			stmt.setInt(1, userType);
 			stmt.setString(2, username);
 			System.out.println(stmt.toString());
 			stmt.executeUpdate();

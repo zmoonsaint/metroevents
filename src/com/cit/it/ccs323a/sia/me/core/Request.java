@@ -113,4 +113,9 @@ public class Request {
 	public void updateRequestStatus(int requestID, int requestStatus) {
 		dbRequest.updateRequestStatus(requestID, requestStatus);
 	}
+	
+	public Request getUserRequestData(int requestID) {
+		return dbRequest.getUserRequestData(requestID);
+	}
+
 }

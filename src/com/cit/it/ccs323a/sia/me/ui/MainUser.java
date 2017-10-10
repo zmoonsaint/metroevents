@@ -5,16 +5,26 @@ package com.cit.it.ccs323a.sia.me.ui;
  * and open the template in the editor.
  */
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import com.cit.it.ccs323a.sia.me.constants.RequestStatus;
 import com.cit.it.ccs323a.sia.me.constants.RequestType;
+import com.cit.it.ccs323a.sia.me.core.Events;
 import com.cit.it.ccs323a.sia.me.core.Request;
 import com.cit.it.ccs323a.sia.me.core.User;
 import com.cit.it.ccs323a.sia.me.db.DBRequest;
@@ -28,6 +38,15 @@ public class MainUser extends javax.swing.JFrame {
     int userID;
     private Request iniRequest;
     User user;
+	ArrayList<Events> eventArr;
+    Events events = new Events();
+	String[] columnNames = {"Event Code", 
+			"Event Name",
+			"Event Date"} ;
+	DefaultTableModel tableModel;
+	JTable table;
+
+
     /**
      * Creates new form MainUser
      */
@@ -78,7 +97,7 @@ public class MainUser extends javax.swing.JFrame {
         btnSearch = new javax.swing.JButton();
         txtSearchEvent = new javax.swing.JTextField();
         jSeparator2 = new javax.swing.JSeparator();
-        btnEvent = new javax.swing.JButton();
+        //btnEvent = new javax.swing.JButton();
         btnOrganizer = new javax.swing.JButton();
         lblSearchEvent = new javax.swing.JLabel();
 
@@ -319,23 +338,71 @@ public class MainUser extends javax.swing.JFrame {
             }
         });
         
-        btnEvent.setText("Event");
+       /* btnEvent.setText("Event");
         btnEvent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEventActionPerformed(evt);
             }
-        });
+        });*/
         
-        btnOrganizer.setText("Organize an Event");
+        btnOrganizer.setText("Request To Organize an Event");
         btnOrganizer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	btnOrganizerActionPerformed(evt);
             }
         });
+        
+        setTableData();
+        table = new JTable(tableModel);
+		table.setPreferredSize(new Dimension (750,500));
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		
+		table.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
 
-        lblSearchEvent.setFont(new java.awt.Font("Segoe Print", 0, 11)); // NOI18N
+
+				int row = table.rowAtPoint(evt.getPoint());
+				int col = table.columnAtPoint(evt.getPoint());	
+				if(row != -1) {
+					String eventCode = (String) table.getValueAt(row, 0);
+					EventDetails ed = new EventDetails();
+					System.out.println(user.getUserID()+ "--------" + eventCode);
+					ed.createAndShowGUI(user, eventCode);
+					ed.setVisible(true);
+				}
+
+
+
+			}});
+
+		
+		
+		JScrollPane editorScrollPane = new JScrollPane(table);
+        editorScrollPane.setVerticalScrollBarPolicy(
+                        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        editorScrollPane.setHorizontalScrollBarPolicy(
+        				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        editorScrollPane.setPreferredSize(new Dimension(500, 200));
+        editorScrollPane.setMinimumSize(new Dimension(500, 200));
+        
+        JPanel eventButtonsPanel = new JPanel(new BorderLayout());
+        eventButtonsPanel.add(btnOrganizer, BorderLayout.LINE_END);
+        //eventButtonsPanel.add(btnEvent, BorderLayout.LINE_END);
+        
+        JPanel eventsPanel = new JPanel(new FlowLayout());
+        eventsPanel.add(eventButtonsPanel);
+        
+        
+        JPanel eventPanel = new JPanel(new BorderLayout());
+        eventPanel.add(editorScrollPane, BorderLayout.LINE_START);
+        eventPanel.add(eventsPanel,BorderLayout.LINE_END);
+        
+
+        lblSearchEvent.setFont(new java.awt.Font("Segoe Print", 0, 25)); // NOI18N
         lblSearchEvent.setForeground(new java.awt.Color(82, 179, 217));
-        lblSearchEvent.setText("Search an event");
+        lblSearchEvent.setText("New Events");
+        txtSearchEvent.setVisible(false);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -349,16 +416,17 @@ public class MainUser extends javax.swing.JFrame {
                             .addComponent(lblSearchEvent)
                             .addComponent(txtSearchEvent, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(93, 93, 93)
-                        .addComponent(btnSearch))
+                        .addGap(93, 93, 93))
+                        //.addComponent(btnSearch)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(39, 39, 39)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(31, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnEvent)
-                .addComponent(btnOrganizer)
+               // .addComponent(btnEvent)
+               // .addComponent(btnOrganizer)
+                .addComponent(eventPanel)
                 .addGap(98, 98, 98))
         );
         jPanel4Layout.setVerticalGroup(
@@ -367,14 +435,15 @@ public class MainUser extends javax.swing.JFrame {
                 .addGap(46, 46, 46)
                 .addComponent(lblSearchEvent)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtSearchEvent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(txtSearchEvent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnSearch)
+               // .addComponent(btnSearch)
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnEvent)
-                .addComponent(btnOrganizer)
+                //.addComponent(btnEvent)
+               // .addComponent(btnOrganizer)
+                .addComponent(eventPanel)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -433,9 +502,10 @@ public class MainUser extends javax.swing.JFrame {
 
     private void btnNotificationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNotificationActionPerformed
         //NotificationOrg n = new NotificationOrg(user);
-    	ViewNotifications n = new ViewNotifications(user);
+    	/*ViewNotifications n = new ViewNotifications(user);
     	n.createAndShowGUI(true);
-        n.show(true);
+        n.show(true); */
+    	UserNotification un = new UserNotification(user);
         this.show(false);// TODO add your handling code here:
     }//GEN-LAST:event_btnNotificationActionPerformed
 
@@ -447,15 +517,32 @@ public class MainUser extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSearchEventActionPerformed
 
-    private void btnEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventActionPerformed
-        ViewEvents v= new ViewEvents(user);
-        v.createAndShowGUI(true);
+   /* private void btnEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventActionPerformed
+        ViewEvents v= new ViewEvents();
+        v.createAndShowGUI(user);
         this.show(false);        // TODO add your handling code here:
-    }//GEN-LAST:event_btnEventActionPerformed
+    }//GEN-LAST:event_btnEventActionPerformed*/
 
     /**
      * @param args the command line arguments
      */
+    
+    public void setTableData() {
+    	
+    	eventArr = events.getAllEventsByStatus(2);
+
+        tableModel = new DefaultTableModel(columnNames, 0);
+    	
+    	for(int i = 0; i < eventArr.size(); i++) {
+    		String eventCode = eventArr.get(i).getEventCode();
+    		String eventName = eventArr.get(i).getEventName();
+    		Date eventDate = eventArr.get(i).getEventDate();
+		   		
+    		Object[] rowData = {eventCode, eventName, eventDate};
+    		tableModel.addRow(rowData);
+    	}	        
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -491,7 +578,7 @@ public class MainUser extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnLogout;
-    private javax.swing.JButton btnEvent;
+   // private javax.swing.JButton btnEvent;
     private javax.swing.JButton btnOrganizer;
     private javax.swing.JButton btnNotification;
     private javax.swing.JButton btnEdit;

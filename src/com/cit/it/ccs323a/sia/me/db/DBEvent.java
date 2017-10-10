@@ -45,6 +45,7 @@ public class DBEvent {
 			stmt.setInt(1, requestID);
 			stmt.setString(2, event.getEventCode());
 			stmt.setString(3, event.getEventName());
+			System.out.println(event.getEventDate());
 			stmt.setDate(4, (Date) event.getEventDate());
 			stmt.setInt(5, event.getEventOrganizer());
 			stmt.setString(6, event.getEventLocation());
@@ -52,6 +53,7 @@ public class DBEvent {
 			System.out.println(stmt.toString());
 			stmt.executeUpdate();
 			
+			System.out.println(user.getUserType());
 			if(user.getUserType().equals("organizer")) {
 				System.out.println("User Type is Organizer. Added for approval");
 				r.setUserID(user.getUserID());
@@ -148,10 +150,14 @@ public class DBEvent {
 		return 0;	
 	}
 	
-	public String getRequestedEventCode(int requestID) {
+	public String getRequestedEventCode(int requestTypeID, int requestID) {
 		
 		connection = DBAccess.getConnection();
-		sqlStatement = "Select eventCode from me_event where requestID = ?";
+		if(requestTypeID == 2)
+			sqlStatement = "SELECT eventCode FROM me_event where requestID = ?";
+		else if(requestTypeID == 3)
+			sqlStatement = "SELECT eventCode FROM me_joinevent where requestID = ?";
+
 		
 		try {
 			stmt = connection.prepareStatement(sqlStatement);
@@ -159,6 +165,7 @@ public class DBEvent {
 			resultset = stmt.executeQuery();
 			System.out.println(stmt.toString());
 			while(resultset.next()) {
+					System.out.println( resultset.getString("eventCode"));
 					return resultset.getString("eventCode");
 			}
 
@@ -343,6 +350,41 @@ public class DBEvent {
 			e.printStackTrace();
 		}
 		return false;	
+	}
+
+	public Events getEventDetails(String eventCode) {
+		connection = DBAccess.getConnection();
+		Events uEvent = new Events();
+
+		sqlStatement = "Select eventID, eventCode, eventName, eventDate, eventLocation, eventDescription, eventOrganizer, eventDateAdded "
+				+ "from me_request "
+				+ "JOIN me_event ON "
+				+ "me_request.requestID = me_event.requestID "
+				+ "where eventCode = ?";
+
+		try {
+			System.out.println(connection.toString());
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setString(1, eventCode);
+			resultset = stmt.executeQuery();
+			System.out.println(stmt.toString());
+			
+			while (resultset.next()) {
+				uEvent.setEventID(resultset.getInt("eventID"));
+				uEvent.setEventCode(resultset.getString("eventCode"));
+				uEvent.setEventName(resultset.getString("eventName"));
+				uEvent.setEventDate(resultset.getDate("eventDate"));
+				uEvent.setEventLocation(resultset.getString("eventLocation"));
+				uEvent.setEventDescription(resultset.getString("eventDescription"));
+				uEvent.setEventOrganizer(resultset.getInt("eventOrganizer"));
+				uEvent.setEventDateAdd(resultset.getTimestamp("eventDateAdded"));
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return uEvent;		
 	}	
 	
 /*	private Timestamp getCurrentTimestamp() {

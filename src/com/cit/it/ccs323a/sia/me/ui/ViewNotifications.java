@@ -15,6 +15,8 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -49,7 +51,7 @@ implements ActionListener {
 	protected static final String txtEventString = "Event";
 	protected static final String txtStatusString = "Status";
 	private static User user;
-	
+
 	JFrame frame = new JFrame("Notifications");
 	JTextField txtRequestID;
 	JTextField txtRequestor;
@@ -60,10 +62,12 @@ implements ActionListener {
 	JButton btnApprove;
 	JButton btnDecline;
 	JButton btnCancel;
-
+	Request selectedRequest = new Request();
+	Request requestData;
+	
 	ArrayList<Request> eventArr;
 	DefaultTableModel tableModel;
-	
+
 	JTable table;
 	Object[] rowData;
 	int selectedRow;
@@ -75,7 +79,7 @@ implements ActionListener {
 			"Requestor",
 			"Request Type",
 			"Event",
-			"Status"} ;
+	"Status"} ;
 
 	protected JLabel actionLabel;
 
@@ -155,7 +159,7 @@ implements ActionListener {
 			//btnCancel.addActionListener(this);
 
 		}
-		
+
 		textControlsPane.add(btnBack);
 		textControlsPane.setBorder(
 				BorderFactory.createCompoundBorder(
@@ -196,21 +200,43 @@ implements ActionListener {
 				int row = table.rowAtPoint(evt.getPoint());
 				int col = table.columnAtPoint(evt.getPoint());		       
 				selectedRow = row;
-				
-				
-				String requestID = table.getValueAt(row, 0).toString();
-				String requestor = table.getValueAt(row, 1).toString();
-				String requestType = table.getValueAt(row, 2).toString();
-				String eventCode =  table.getValueAt(row, 3).toString();
-				String status = table.getValueAt(row, 4).toString();
-				System.out.println(requestID + requestor + requestType +  eventCode + status );
-				
-				txtRequestID.setText(requestID);
-				txtRequestor.setText(requestor);
-				txtRequestType.setText(requestType);
-				txtEvent.setText(eventCode);
-				txtStatus.setText(status);
-		
+
+
+				int requestID = Integer.valueOf(table.getValueAt(row, 0).toString());
+				requestData = selectedRequest.getUserRequestData(requestID);
+				Events requestEvent = new Events();
+				User tempUser = user.getUserData(requestData.getUserID());
+				String Requestor = tempUser.getUserFullName();
+
+
+				int requestType = requestData.getRequestTypeID();
+				txtRequestID.setText(String.valueOf(requestID));
+				txtRequestor.setText(Requestor);
+				txtRequestType.setText(requestData.getRequestType(requestData.getRequestTypeID()));
+
+				if(requestData.getRequestTypeID() == 2 || requestData.getRequestTypeID() == 3) {
+					txtEvent.setText(requestEvent.getRequestedEventCode(requestType,requestID ));
+				} else {
+					txtEvent.setText("");	
+				}
+
+				txtStatus.setText(requestData.getStatusString(requestData.getRequestStatusID()));
+
+				System.out.println(user.getUserType());
+				if (!user.getUserType().equals("user")) {
+					if(user.getUserID() == requestData.getUserID()) {
+						btnApprove.setEnabled(false);
+						btnDecline.setEnabled(false);
+					} else {
+						btnApprove.setEnabled(true);
+						btnDecline.setEnabled(true);
+					}
+
+					if(requestData.getRequestStatusID() != 1 ) {
+						btnApprove.setEnabled(false);
+						btnDecline.setEnabled(false);
+					}
+				}
 
 			}});
 
@@ -268,12 +294,13 @@ implements ActionListener {
 		}
 	}
 
-	
+
 	public void actionPerformed(ActionEvent e) {
 		System.out.println(e.getActionCommand());
 
 		//String eventDescription = txtArea.getText();
 		if(e.getActionCommand().equals("Approve Request")) {
+			this.refreshTable();
 			int requestID = Integer.valueOf(txtRequestID.getText());
 			String requestor = txtRequestor.getText();
 			System.out.println(txtRequestType.getText());
@@ -283,13 +310,19 @@ implements ActionListener {
 			//String eventDescription = textArea.getText();
 			String eventLocation = txtEvent.getText();
 			int eventOrganizer = user.getUserID();
+			
+			User tempUser = user.getUserData(requestData.getUserID());
+			String Requestor = tempUser.getUserName();
 
 			request.processRequest(requestID, 2);
 			if(requestType == 1 || requestType == 4 || requestType == 5 ) {
-				user.setUserAccountType(requestor, requestType);
-	        	tableModel.removeRow(selectedRow);
+				System.out.println("Request Type : ----------------" + Requestor + ", " +requestType);
+				user.setUserAccountType(Requestor, requestType);
+				tableModel.removeRow(selectedRow);
 			}
+			
 		} else if (e.getActionCommand().equals("Decline Request")) {
+			this.refreshTable();
 			int requestID = Integer.valueOf(txtRequestID.getText());
 			String requestor = txtRequestor.getText();
 			System.out.println(txtRequestType.getText());
@@ -302,7 +335,7 @@ implements ActionListener {
 
 			request.processRequest(requestID, 3);
 			System.out.println("Decline");
-        	tableModel.removeRow(selectedRow);
+			tableModel.removeRow(selectedRow);
 
 		} /*else if (e.getActionCommand().equals("Cancel Event")) {
 			if(JOptionPane.showConfirmDialog(null, "Do you want to cancel event " + eventCode + "?", "CONFIRMATION", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -343,6 +376,22 @@ implements ActionListener {
 		return false;
 	}
 
+
+
+    private void refreshTable(){
+    	System.out.println("Refreshing Table.........");
+        // removing all the rows of the table
+/*        DefaultTableModel dm = (DefaultTableModel)table.getModel();
+        dm.getDataVector().removeAllElements();
+        System.out.println("Refresh Table");*/
+
+    	tableModel.getDataVector().removeAllElements();
+  
+        //calling method addRows
+        this.setTableData();
+    }
+    
+    
 	public void setTableData() {
 
 		System.out.print("setTableData inside");
@@ -353,10 +402,13 @@ implements ActionListener {
 			eventArr = request.getAllUserRequestsByStatus(1);
 			break;
 		case "organizer":
-			//eventArr = request.getAllUserRequests(user);
-			eventArr = request.getAllUserRequestsForOrganizer(user.getUserID());
+			eventArr = (request.getAllUserRequestsForOrganizer(user.getUserID()));
 			break;
 		default:
+			String[] columnNames = {"Request ID", 
+					"Request Type",
+					"Event",
+			"Status"} ;
 			eventArr = request.getAllUserRequests(user);
 			break;
 		}
@@ -364,53 +416,40 @@ implements ActionListener {
 		tableModel = new DefaultTableModel(columnNames, 0);
 
 		for(int i = 0; i < eventArr.size(); i++) {
-		
+
 			int requestID = eventArr.get(i).getRequestID();
 			int requestorID = eventArr.get(i).getUserID();
-			
+
 			Request objRequest = new Request();
 			objRequest.getRequestType(requestID);
 			String RequestType = objRequest.getRequestType(eventArr.get(i).getRequestTypeID());
 
-
-			
-			
 			String event = "";
-			if(eventArr.get(i).getRequestTypeID() == 2 || eventArr.get(i).getRequestTypeID() == 3 ) {
+			if(eventArr.get(i).getRequestTypeID() == 2) {
 				Events objEvent = new Events();
-				event  = objEvent.getRequestedEventCode(requestID);
-				System.out.println("Event............." + eventArr.get(i).getRequestTypeID() + event );
+				event  = objEvent.getRequestedEventCode(eventArr.get(i).getRequestTypeID(), requestID);
+				System.out.println("Event............." + eventArr.get(i).getRequestTypeID() + "Event Code : " + event );
 			}
-			
+			if(eventArr.get(i).getRequestTypeID() == 3 ) {
+				Events objEvent = new Events();
+				event  = objEvent.getRequestedEventCode(eventArr.get(i).getRequestTypeID(), requestID);
+				System.out.println("Event............." + eventArr.get(i).getRequestTypeID() + "Event Code : " + event );
+			}			
+
 			System.out.println(eventArr.get(i).getRequestStatusID());
 			int stat = eventArr.get(i).getRequestStatusID();
 			String status = objRequest.getStatusString(stat);
-			/*switch (stat) {
-			case 1:
-				status = "PENDING"; 
-				System.out.println(status);break;
-			case 2:
-				status = "APPROVED"; break;
-			case 3:
-				status = "DECLINED"; break;
-			case 4:
-				status = "CANCELLED"; break;
-			default: 
-				status = "";
-			}*/
-
 			User tempUser = user.getUserData(requestorID);
 			String Requestor = tempUser.getUserFullName();
-    		
 
 			Object[] rowData = {requestID, Requestor, RequestType, event, status};
 			tableModel.addRow(rowData);
 
-		}	        
+		}	 
+
+
 
 	}
-	
-	
 
 	public void createAndShowGUI(boolean open) {
 		//Create and set up the window.

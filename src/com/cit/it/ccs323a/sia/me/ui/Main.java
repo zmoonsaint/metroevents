@@ -427,9 +427,21 @@ public class Main extends javax.swing.JFrame {
     private void btnNotificationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNotificationActionPerformed
         //NotificationOrg n = new NotificationOrg(user);
        // n.show(true);
-    	ViewNotifications n = new ViewNotifications(user);
+    	/*ViewNotifications n = new ViewNotifications(user);
     	n.createAndShowGUI(true);
-        this.show(false);// TODO add your handling code here:
+        this.show(false);// TODO add your handling code here:*/
+    	
+    	
+    	if(user.getUserType().equals("organizer")) {
+    		OrganizerNotification on = new OrganizerNotification(user);
+    		on.setVisible(true);
+    	} else {
+    		ViewNotifications n = new ViewNotifications(user);
+        	n.createAndShowGUI(true);
+        }
+    	
+    	this.show(false);
+    	
     }//GEN-LAST:event_btnNotificationActionPerformed
     
     private void txtEventSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEventSearchActionPerformed
@@ -451,8 +463,8 @@ public class Main extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
     	System.out.println("Event button is clicked");
     	user.setUserName(previousUsername);
-    	 ViewEvents v= new ViewEvents(user);
-         v.createAndShowGUI(true);
+    	 ViewEvents v= new ViewEvents();
+         v.createAndShowGUI(user);
          this.show(false);   
     }//GEN-LAST:event_jButton3ActionPerformed
 

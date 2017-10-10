@@ -102,7 +102,8 @@ public class DBRequest {
 		connection = DBAccess.getConnection();
 		ArrayList<Request> userRequests  = null;
 
-		sqlStatement = "select * from me_request where userID = ?";
+		sqlStatement = "select * from me_request where userID = ?"
+				+ " order by requestStatusID asc";
 		
 		try {
 			System.out.println(connection.toString());
@@ -190,17 +191,52 @@ public class DBRequest {
 		return userRequests;			
 	}
 	
+	public Request getUserRequestData(int requestID) {
+		connection = DBAccess.getConnection();
+		Request uRequest  = new Request();
+
+		sqlStatement = "select * from me_request where requestID = ?";
+		
+		try {
+			System.out.println(connection.toString());
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setInt(1, requestID);
+			resultset = stmt.executeQuery();
+			System.out.println(stmt.toString());
+			while (resultset.next()) {
+				uRequest.setUserID(resultset.getInt("userID"));
+				uRequest.setRequestID(resultset.getInt("requestID"));
+				uRequest.setRequestTypeID(resultset.getInt("requestTypeID"));
+				uRequest.setRequestDate(resultset.getTimestamp("requestDate"));
+				uRequest.setRequestStatusID(resultset.getInt("requestStatusID"));
+				uRequest.setRequestStatusDate(resultset.getTimestamp("requestStatusDate"));
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return uRequest;			
+	}
+	
+	
 	public ArrayList<Request> getAllUserRequestsForOrganizer(int userID) {
+		System.out.println("getAllUserRequestsForOrganizer.........." );
 		connection = DBAccess.getConnection();
 		ArrayList<Request> userRequests = new ArrayList<>();
-		Request uRequest = new Request();
-
-		sqlStatement = "SELECT DISTINCT me_request.requestID, me_request.requestTypeID, "
-				+ "me_request.requestStatusID, me_request.requestDate, "
-				+ "me_request.requestStatusDate FROM me_event "
-				+ " JOIN me_request "
-				+ "ON me_request.requestID = me_event.requestID "
-				+ "where eventOrganizer = ?";
+		Request uRequest;
+		sqlStatement = "SELECT * FROM (SELECT me_request.requestID, me_request.userID, me_request.requestTypeID, me_request.requestDate, me_request.requestStatusID, me_request.requestStatusDate "
+				+ "FROM me_request JOIN me_joinevent ON me_request.requestID = me_joinevent.requestID AND me_request.requestTypeID = 3 "
+				+ "LEFT JOIN me_event ON me_joinevent.eventCode = me_event.eventCode AND me_event.eventOrganizer = ? "
+				+ "ORDER BY `me_request`.`requestDate` DESC) REQUESTQ WHERE requestStatusID = 1";
+		
+		/*sqlStatement = "SELECT me_request.requestID, me_request.userID, me_request.requestTypeID, me_request.requestDate, me_request.requestStatusID, me_request.requestStatusDate "
+				+ "FROM me_request JOIN me_joinevent ON me_request.requestID = me_joinevent.requestID "
+				+ "AND me_request.requestTypeID = 3 "
+				+ "LEFT JOIN me_event ON me_joinevent.eventCode = me_event.eventCode "
+				+ "AND me_event.eventOrganizer = ? "
+				+ "AND me_request.requestStatusID = 1 "
+				+ "order by me_request.requestDate desc";*/
 		
 		try {
 			System.out.println(connection.toString());
@@ -209,9 +245,9 @@ public class DBRequest {
 			resultset = stmt.executeQuery();
 			System.out.println(stmt.toString());
 			while (resultset.next()) {
-				System.out.print(resultset.getInt("requestID"));
-
-				uRequest.setUserID(userID);
+				System.out.println("Request ID : " + resultset.getInt("requestID"));
+				uRequest = new Request();
+				uRequest.setUserID(resultset.getInt("userID"));
 				uRequest.setRequestID(resultset.getInt("requestID"));
 				uRequest.setRequestTypeID(resultset.getInt("requestTypeID"));
 				uRequest.setRequestDate(resultset.getTimestamp("requestDate"));
@@ -220,26 +256,26 @@ public class DBRequest {
 				userRequests.add(uRequest);
 			}
 			
-			sqlStatement = "SELECT * FROM me_joinevent JOIN me_event "
-					+   "ON me_joinevent.eventCode = me_event.eventCode AND me_event.eventOrganizer = ? "
-					+ " JOIN me_request " + 
-					" ON me_request.requestID = me_joinevent.requestID";
 			
-			stmt = connection.prepareStatement(sqlStatement);
-			stmt.setInt(1, userID);
-			resultset = stmt.executeQuery();
-			System.out.println(stmt.toString());
+			/*sqlStatement = "select * from me_request where userID = ?";
+			
+				System.out.println(connection.toString());
+				stmt = connection.prepareStatement(sqlStatement);
+				stmt.setInt(1, userID);
+				resultset = stmt.executeQuery();
+				System.out.println(stmt.toString());
+				while (resultset.next()) {
+					System.out.println("Request ID : " + resultset.getInt("requestID"));
+					uRequest = new Request();
+					uRequest.setUserID(userID);
+					uRequest.setRequestID(resultset.getInt("requestID"));
+					uRequest.setRequestTypeID(resultset.getInt("requestTypeID"));
+					uRequest.setRequestDate(resultset.getTimestamp("requestDate"));
+					uRequest.setRequestStatusID(resultset.getInt("requestStatusID"));
+					uRequest.setRequestStatusDate(resultset.getTimestamp("requestStatusDate"));
+					userRequests.add(uRequest);
+				}*/
 
-			while (resultset.next()) {
-				System.out.print(resultset.getInt("requestID"));
-				uRequest.setUserID(userID);
-				uRequest.setRequestID(resultset.getInt("requestID"));
-				uRequest.setRequestTypeID(resultset.getInt("requestTypeID"));
-				uRequest.setRequestDate(resultset.getTimestamp("requestDate"));
-				uRequest.setRequestStatusID(resultset.getInt("requestStatusID"));
-				uRequest.setRequestStatusDate(resultset.getTimestamp("requestStatusDate"));
-				userRequests.add(uRequest);
-			}
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -388,4 +424,5 @@ public class DBRequest {
 			e.printStackTrace();
 		}
 	}
+
 }
