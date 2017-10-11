@@ -130,6 +130,10 @@ public class Events {
 		return dbEvent.getEventDetails(eventCode);
 	}
 	
+	public int getCountOfEventParticipants(String eventCode) {
+		return dbEvent.getCountOfEventParticipants(eventCode);
+	}
+	
 	
 	
 	@SuppressWarnings("deprecation")

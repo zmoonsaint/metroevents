@@ -300,7 +300,8 @@ public class DBEvent {
 				+ "from me_request "
 				+ "JOIN me_event ON "
 				+ "me_request.requestID = me_event.requestID "
-				+ "where eventOrganizer = ?";
+				+ "where eventOrganizer = ? "
+				+ "AND me_request.requestStatusID = 2";
 
 		try {
 			System.out.println(connection.toString());
@@ -386,6 +387,34 @@ public class DBEvent {
 		}
 		return uEvent;		
 	}	
+	
+	public int getCountOfEventParticipants(String eventCode) {
+		connection = DBAccess.getConnection();
+
+		sqlStatement = "Select Count(me_joinevent.userID) participant from me_joinevent " + 
+				"LEFT JOIN me_request ON me_request.requestID = me_joinevent.requestID " + 
+				"where eventCode = ? " + 
+				"AND me_request.requestStatusID = 2";
+
+		try {
+			System.out.println(connection.toString());
+			stmt = connection.prepareStatement(sqlStatement);
+			stmt.setString(1, eventCode);
+			resultset = stmt.executeQuery();
+			System.out.println(stmt.toString());
+			
+			while (resultset.next()) {
+				return resultset.getInt("participant");
+
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
+		return 0;
+	}
 	
 /*	private Timestamp getCurrentTimestamp() {
 		java.util.Date today = new java.util.Date();

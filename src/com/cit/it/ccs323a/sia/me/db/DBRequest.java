@@ -308,6 +308,7 @@ public class DBRequest {
 	}
 	
 	public String getRequestType(int requestTypeID) {
+		System.out.println("getRequestType(int requestTypeID)" + requestTypeID );
 		
 		connection = DBAccess.getConnection();
 		sqlStatement = "SELECT requestType from me_requesttype where requestTypeID = ?";
@@ -323,7 +324,7 @@ public class DBRequest {
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Error Here");
 			e.printStackTrace();
 		}
 		return "";
@@ -363,7 +364,6 @@ public class DBRequest {
 				+ "WHERE requestID = ?";
 
 		try {
-
 				
 			stmt = connection.prepareStatement(sqlStatement);
 			stmt.setInt(1, requestStatus);

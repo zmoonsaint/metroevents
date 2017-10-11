@@ -133,6 +133,9 @@ public class EventDetails extends JPanel
         
         //setting up text
         
+        if(!user.getUserType().equals("user")) {
+        	btnJoin.setVisible(false);
+        }
     	event = event.getEventDetails(eventCode);
     	int eventID = event.getEventID();
     	String eventName = event.getEventName();

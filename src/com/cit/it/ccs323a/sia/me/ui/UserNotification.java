@@ -37,6 +37,7 @@ implements ActionListener {
 
 		String[] myRequests = {"Request ID", 
 				"Request Type",
+				"Event",
 				"Request Status"} ;
 		
 /*		String[] myRequestData = {"My Event", 
@@ -75,7 +76,7 @@ implements ActionListener {
 				if(row != -1) {
 					myRequestSelectedRow = row;
 					int requestID = Integer.valueOf(myRequestsTable.getValueAt(row, 0).toString());
-					RequestDetails rd = new RequestDetails(user, requestID);
+					UserRequestDetails rd = new UserRequestDetails(user, requestID);
 					rd.createAndShowGUI();
 					System.out.println(requestID);
 				}
@@ -126,7 +127,7 @@ implements ActionListener {
 			int stat = myRequestData.get(i).getRequestStatusID();
 			String requestStatus = objRequest.getStatusString(stat);
 			
-			Object[] rowData = {requestID, requestType, requestStatus};
+			Object[] rowData = {requestID, requestType, event, requestStatus};
 			myRequestsTableModel.addRow(rowData);
 
 		}	        		

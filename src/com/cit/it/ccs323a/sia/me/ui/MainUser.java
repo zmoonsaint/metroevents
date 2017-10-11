@@ -495,7 +495,8 @@ public class MainUser extends javax.swing.JFrame {
     }
     
 	private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        Start s = new Start();
+        user = new User();
+		Start s = new Start();
         s.show(true);
         this.show(false);         // TODO add your handling code here:
     }//GEN-LAST:event_btnLogoutActionPerformed

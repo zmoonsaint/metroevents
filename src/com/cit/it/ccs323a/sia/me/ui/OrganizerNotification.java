@@ -195,7 +195,10 @@ implements ActionListener {
 				Request objRequest = new Request();
 				objRequest.getRequestType(requestID);
 				String requestType = objRequest.getRequestType(userRequestData.get(i).getRequestTypeID());
-				String requestor = objRequest.getRequestType(userRequestData.get(i).getUserID());
+				 
+				User tempUser = user.getUserData(userRequestData.get(i).getUserID());
+				String requestor = tempUser.getUserFullName();
+
 
 
 				

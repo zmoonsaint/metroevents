@@ -1,11 +1,21 @@
 package com.cit.it.ccs323a.sia.me.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
+import com.cit.it.ccs323a.sia.me.core.Events;
 import com.cit.it.ccs323a.sia.me.core.User;
 
 /*
@@ -21,7 +31,14 @@ import com.cit.it.ccs323a.sia.me.core.User;
 public class Main extends javax.swing.JFrame {
 	User user;
     String previousUsername;
-
+	String[] columnNames = {"Event Code", 
+			"Event Name",
+			"Event Date",
+			"Approved Participants"} ;
+    Events events = new Events();
+	ArrayList<Events> eventArr;
+	DefaultTableModel tableModel;
+	JTable table;
     /**
      * Creates new form Main
      */
@@ -69,9 +86,9 @@ public class Main extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         btnSearch = new javax.swing.JButton();
         txtEventSearch = new javax.swing.JTextField();
-        jButton4 = new javax.swing.JButton();
+        btnCreateAnEvent = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
-        jButton3 = new javax.swing.JButton();
+        btnEvent = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
 
         jLabel8.setFont(new java.awt.Font("Segoe Print", 1, 24)); // NOI18N
@@ -323,23 +340,69 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("Create an event");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnCreateAnEvent.setText("Create an event");
+        btnCreateAnEvent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnCreateAnEventActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Event");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnEvent.setText("Manage Events");
+        btnEvent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnEventActionPerformed(evt);
             }
         });
 
-        jLabel10.setFont(new java.awt.Font("Segoe Print", 0, 11)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Segoe Print", 0, 24)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(82, 179, 217));
-        jLabel10.setText("Search an event");
+    	if(user.getUserType().equals("organizer")) {
+    		jLabel10.setText("Events By " + user.getUserType().toUpperCase());
+    	} else {
+            jLabel10.setText("All Events");
+
+    	}
+        
+        setTableData();
+        table = new JTable(tableModel);
+		table.setPreferredSize(new Dimension (750,500));
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		
+		table.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+
+
+				int row = table.rowAtPoint(evt.getPoint());
+				int col = table.columnAtPoint(evt.getPoint());	
+				if(row != -1) {
+					String eventCode = (String) table.getValueAt(row, 0);
+					EventDetails ed = new EventDetails();
+					System.out.println(user.getUserID()+ "--------" + eventCode);
+					ed.createAndShowGUI(user, eventCode);
+					ed.setVisible(true);
+				}
+			}});
+		
+		JScrollPane editorScrollPane = new JScrollPane(table);
+        editorScrollPane.setVerticalScrollBarPolicy(
+                        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        editorScrollPane.setHorizontalScrollBarPolicy(
+        				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        editorScrollPane.setPreferredSize(new Dimension(500, 200));
+        editorScrollPane.setMinimumSize(new Dimension(500, 200));
+        
+        JPanel eventButtonsPanel = new JPanel(new BorderLayout());
+        eventButtonsPanel.add(btnEvent, BorderLayout.LINE_END);
+        //eventButtonsPanel.add(btnEvent, BorderLayout.LINE_END);
+        
+        JPanel eventsPanel = new JPanel(new FlowLayout());
+        eventsPanel.add(eventButtonsPanel);
+        
+        
+        JPanel eventPanel = new JPanel(new BorderLayout());
+        eventPanel.add(editorScrollPane, BorderLayout.LINE_START);
+        eventPanel.add(eventsPanel,BorderLayout.LINE_END);		
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -350,20 +413,20 @@ public class Main extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addComponent(txtEventSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel10)))
+                            //.addComponent(txtEventSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(93, 93, 93)
-                        .addComponent(btnSearch))
+                        .addGap(93, 93, 93))
+                       // .addComponent(btnSearch)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(39, 39, 39)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(73, 73, 73)
-                        .addComponent(jButton4))
+                        .addComponent(eventPanel))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(97, 97, 97)
-                        .addComponent(jButton3)))
+                        .addGap(97, 97, 97)))
+                       // .addComponent(btnEvent)
                 .addContainerGap(31, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -372,15 +435,15 @@ public class Main extends javax.swing.JFrame {
                 .addGap(46, 46, 46)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtEventSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                //.addComponent(txtEventSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnSearch)
+                //.addComponent(btnSearch)
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
-                .addComponent(jButton4)
+                .addComponent(eventPanel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton3)
+              //  .addComponent(btnEvent)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -436,37 +499,57 @@ public class Main extends javax.swing.JFrame {
     		OrganizerNotification on = new OrganizerNotification(user);
     		on.setVisible(true);
     	} else {
-    		ViewNotifications n = new ViewNotifications(user);
-        	n.createAndShowGUI(true);
+    		AdminNotification an = new AdminNotification(user);
+    		an.setVisible(true);
         }
     	
     	this.show(false);
     	
     }//GEN-LAST:event_btnNotificationActionPerformed
-    
+    public void setTableData() {
+    	
+    	if(user.getUserType().equals("organizer")) {
+    		eventArr = events.getAllEventsByOrganizer(user.getUserID());
+    	} else {
+    		eventArr = events.getAllEventsByStatus(2);
+    	}
+
+        tableModel = new DefaultTableModel(columnNames, 0);
+    	
+    	for(int i = 0; i < eventArr.size(); i++) {
+    		String eventCode = eventArr.get(i).getEventCode();
+    		String eventName = eventArr.get(i).getEventName();
+    		Date eventDate = eventArr.get(i).getEventDate();
+    		int noOfParticipants = events.getCountOfEventParticipants(eventCode);
+		   		
+    		Object[] rowData = {eventCode, eventName, eventDate, noOfParticipants};
+    		tableModel.addRow(rowData);
+    	}	        
+    }
     private void txtEventSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEventSearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtEventSearchActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnCreateAnEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateAnEventActionPerformed
         CreateEvent e = new CreateEvent();
         e.show(true);
         this.show(false);          // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btnCreateAnEventActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        Start s = new Start();
+        user = new User();
+    	Start s = new Start();
         s.show(true);
         this.show(false);         // TODO add your handling code here:
     }//GEN-LAST:event_btnLogoutActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventActionPerformed
     	System.out.println("Event button is clicked");
     	user.setUserName(previousUsername);
     	 ViewEvents v= new ViewEvents();
          v.createAndShowGUI(user);
          this.show(false);   
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnEventActionPerformed
 
     private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
         // TODO add your handling code here:
@@ -510,8 +593,8 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnLogout;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton btnEvent;
+    private javax.swing.JButton btnCreateAnEvent;
     private javax.swing.JButton btnNotification;
     private javax.swing.JButton btnEdit;
     private javax.swing.JLabel jLabel10;
