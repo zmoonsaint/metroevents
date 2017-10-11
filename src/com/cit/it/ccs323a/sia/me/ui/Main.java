@@ -531,9 +531,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_txtEventSearchActionPerformed
 
     private void btnCreateAnEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateAnEventActionPerformed
-        CreateEvent e = new CreateEvent();
-        e.show(true);
-        this.show(false);          // TODO add your handling code here:
+         // TODO add your handling code here:
     }//GEN-LAST:event_btnCreateAnEventActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
